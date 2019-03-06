@@ -4,7 +4,7 @@ const author_schema = mongoose.Schema({
 
     fname: "string",
     lname: "string",
-    auth_photo: "string",
+    author_photo: "string",
     birth_date: Date,
     books: [{type: mongoose.Schema.Types.ObjectId, ref:'book'}],
 
