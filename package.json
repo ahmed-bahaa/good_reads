@@ -1,7 +1,6 @@
 {
   "name": "good_reads",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,5 +12,14 @@
     "express": "^4.16.4",
     "mongoose": "^5.4.17",
     "nodemon": "^1.18.10"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahmed-bahaa/good_reads.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ahmed-bahaa/good_reads/issues"
+  },
+  "homepage": "https://github.com/ahmed-bahaa/good_reads#readme",
+  "description": ""
 }

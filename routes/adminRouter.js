@@ -1,7 +1,7 @@
 const express = require("express")
 const category_model = require('../models/category.js')
 const admin_router = express.Router()
-const category_model = require('../models/category');
+//const category_model = require('../models/category');
 
 //======================== GET ==========================
 // lists categories
