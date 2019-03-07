@@ -2,7 +2,7 @@ const express = require("express")
 const mongoose = require("mongoose")
 const user_router = require('./routes/userRouter')
 const admin_router = require('./routes/adminRouter')
-
+const index_router= require('./routes/userRouter')
 mongoose.connect('mongodb://localhost:27017/goodreads' , ()=>{
      console.log("goodreads db connected!")
  })

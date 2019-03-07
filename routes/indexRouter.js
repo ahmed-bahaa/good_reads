@@ -25,4 +25,4 @@ index_router.get('/index',(req,res)=>{
 
 
 
-module.exports = user_router
+module.exports = index_router
