@@ -3,6 +3,14 @@ const category_model = require('../models/category.js')
 const admin_router = express.Router()
 
 //======================== GET ==========================
+
+
+admin_router.get( '/category/new',(req,res)=>{
+    //res.send("add new user");
+    res.render('../views/pages/category_update_form.ejs')
+})
+
+
 // lists categories
 admin_router.get('/category/', async (req,res)=>{
     try
@@ -33,13 +41,13 @@ admin_router.get('/category/:id/edit', async (req,res)=>{
 
 //======================== POST =========================
 
-admin_router.post( '/category/', async(req,res)=>{
+admin_router.post( '/category/:id/add', async(req,res)=>{
     try
     {
         //console.log(req.body.fname)
         const new_category = await category_model.create({ name:req.body.name})
         const categories = await category_model.find({}) 
-        res.json(categories);
+        res.render('../views/pages/category.ejs', {categories:categories,})
     }
     catch( err ){
         console.log( err )
@@ -68,9 +76,9 @@ admin_router.get( '/category/:id/delete', async(req,res)=>{
     try
     {      
         console.log(req.params.id)
-        const deleted_book = await category_model.findByIdAndRemove(req.params.id.replace(":",""))
-        const books = await category_model.find({}) 
-        res.json(books);
+        const deleted_category = await category_model.findByIdAndRemove(req.params.id.replace(":",""))
+        const categories = await category_model.find({}) 
+        res.render('../views/pages/category.ejs', {categories:categories,})
     }
     catch( err ){
         console.log( err )
