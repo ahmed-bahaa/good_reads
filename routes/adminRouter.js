@@ -1,7 +1,6 @@
 const express = require("express")
 const category_model = require('../models/category.js')
 const admin_router = express.Router()
-const category_model = require('../models/category');
 
 //======================== GET ==========================
 // lists categories
@@ -21,8 +20,9 @@ admin_router.get('/category/', async (req,res)=>{
 admin_router.get('/category/:id/edit', async (req,res)=>{
 
     try{
-       
-        res.render('../views/pages/category_update_form.ejs')
+        console.log(req.params.id.replace(":",""))
+        const selected_category=  await category_model.findById(req.params.id.replace(":",""))
+        res.render('../views/pages/category_update_form.ejs',{data:selected_category})
 
     }
     catch(e){
@@ -50,7 +50,8 @@ admin_router.post( '/category/', async(req,res)=>{
 admin_router.post('/category/:id/edit', async (req,res)=>{
 
     try{
-        const updated_category = await category_model.findByIdAndUpdate(req.params.id, req.body, {new: true})
+        console.log("yeaaah")
+        const updated_category = await category_model.findByIdAndUpdate(req.params.id.replace(":",""), req.body, {new: true})
         const categories = await category_model.find({})
         res.render('../views/pages/category.ejs', {categories:categories,})
     }
