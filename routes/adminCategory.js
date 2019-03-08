@@ -10,7 +10,7 @@ const admin_category_router = express.Router()
 
 admin_category_router.get( '/new',(req,res)=>{
     //res.send("add new user");
-    res.render('../views/pages/category_update_form.ejs')
+    res.render('../views/pages/category_form.ejs')
 })
 
 
@@ -33,7 +33,7 @@ admin_category_router.get('/:id/edit', async (req,res)=>{
     try{
         console.log(req.params.id.replace(":",""))
         const selected_category=  await category_model.findById(req.params.id.replace(":",""))
-        res.render('../views/pages/category_update_form.ejs',{data:selected_category})
+        res.render('../views/pages/category_form.ejs',{data:selected_category})
 
     }
     catch(e){
