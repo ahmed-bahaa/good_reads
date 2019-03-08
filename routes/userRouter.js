@@ -9,6 +9,9 @@ user_router.get('/signup', async (req, res) => {
     res.render('pages/user/signup-form');
 });
 
+user_router.get('/signin', async (req, res) => {
+    res.render('pages/signin-form', {userType: 'user'});
+});
 //======================== POST =========================
 user_router.post('/signup', upload.single('avatar'), async (req, res) => {
     try {
@@ -30,6 +33,19 @@ user_router.post('/signup', upload.single('avatar'), async (req, res) => {
         console.log(err)
     }
 })
+
+user_router.post('/signin', async (req, res) => {
+    const user = await user_model.findOne({ username: req.body.username }, (err, doc) => {
+        if (err) throw err
+    });
+    if (!user) res.send("username not found");
+    user.comparePassword(req.body.password, (err, isMatch) => {
+        if(err) throw err
+        if (!isMatch) res.send("password is not correct");
+        res.send("password is correct");
+    })
+
+});
 
 //======================== DELETE =======================
 

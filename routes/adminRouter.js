@@ -40,6 +40,10 @@ admin_router.get('/category/:id/edit', async (req,res)=>{
 
 })
 
+admin_router.get('/signin', async (req, res) => {
+    res.render('pages/signin-form', {userType: 'admin'});
+});
+
 //======================== POST =========================
 
 admin_router.post( '/category/:id/add', async(req,res)=>{
@@ -70,6 +74,18 @@ admin_router.post('/category/:id/edit', async (req,res)=>{
 
 })
 
+admin_router.post('/signin', async (req, res) => {
+    const admin = await admin_model.findOne({ username: req.body.username }, (err, doc) => {
+        if (err) throw err
+    });
+    if (!admin) res.send("username not found");
+    admin.comparePassword(req.body.password, (err, isMatch) => {
+        if(err) throw err
+        if (!isMatch) res.send("password is not correct");
+        res.send("password is correct");
+    })
+
+});
 
 //======================== DELETE =======================
 
