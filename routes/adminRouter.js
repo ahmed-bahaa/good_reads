@@ -1,5 +1,6 @@
 const express = require("express")
 const category_model = require('../models/category.js')
+const admin_model = require('../models/admin.js');
 const admin_router = express.Router()
 
 //======================== GET ==========================
@@ -45,7 +46,7 @@ admin_router.post( '/category/:id/add', async(req,res)=>{
     try
     {
         //console.log(req.body.fname)
-        const new_category = await category_model.create({ name:req.body.name})
+        const new_category = await category_model.create({ username: req.body.username,  password: req.body.password, name:req.body.name})
         const categories = await category_model.find({}) 
         res.render('../views/pages/category.ejs', {categories:categories,})
     }
@@ -85,5 +86,25 @@ admin_router.get( '/category/:id/delete', async(req,res)=>{
     }})
 
 //======================== PUT ==========================
+
+
+
+
+//======================== Nada betgarrab el database schema ==========================
+admin_router.post('/signup',async(req, res)=> {
+    try
+    {
+        // const admin = new admin_model({username:req.body.username, password:req.body.password, name:req.body.name})
+        const admin = new admin_model({username:"admin", password:"admin", name:"good reads admin"}) //dummy admin created on the fly
+        await admin.save((err, doc) => {
+            if (err) console.log(err) //duplicate username
+            const admins = admin_model.find((err,doc)=>{
+                res.send(doc);
+            }) 
+        })
+    }
+    catch( err ){
+        console.log( err )
+    }})
 
 module.exports = admin_router
