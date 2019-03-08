@@ -110,8 +110,8 @@ admin_router.get( '/category/:id/delete', async(req,res)=>{
 admin_router.post('/signup',async(req, res)=> {
     try
     {
-        // const admin = new admin_model({username:req.body.username, password:req.body.password, name:req.body.name})
-        const admin = new admin_model({username:"admin", password:"admin", name:"good reads admin"}) //dummy admin created on the fly
+        const admin = new admin_model({username:req.body.username, password:req.body.password, name:req.body.name})
+        // const admin = new admin_model({username:"admin", password:"admin", name:"good reads admin"}) //dummy admin created on the fly
         await admin.save((err, doc) => {
             if (err) console.log(err) //duplicate username
             const admins = admin_model.find((err,doc)=>{

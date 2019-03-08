@@ -1,12 +1,12 @@
 <form action="/user/signup" method="post" enctype="multipart/form-data">
     <label> First Name </label>
-    <input type="text" name="first_name" /> <br>
+    <input type="text" name="first_name" pattern="^[A-Za-z][A-Za-z0-9]*$" required /> <br>
     <label> Last Name </label>
-    <input type="text" name="last_name" /> <br>
+    <input type="text" name="last_name" pattern="^[A-Za-z][A-Za-z0-9]*$" required /> <br>
     <label> Username </label>
-    <input type="username" name="username" /> <br>
+    <input type="username" name="username" pattern="^[A-Za-z][A-Za-z0-9]*$" required /> <br>
     <label> Password </label>
-    <input type="password" name="password" /> <br>
+    <input type="password" name="password" required /> <br>
     <label> Avatar </label>
     <input type="file" name="avatar" /> <br>
     <input type="submit" name="submit" value="sign up" /> <br>
