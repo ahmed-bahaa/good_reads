@@ -17,6 +17,8 @@ goodreads.listen(3000, () => {
     console.log("goodreads app started on port 2000")
 })
 
+goodreads.set('view engine', 'ejs');
+
 goodreads.use(express.urlencoded())
 goodreads.use('/goodreads', index_router)
 goodreads.use('/user', user_router)
