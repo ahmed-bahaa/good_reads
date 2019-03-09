@@ -1,7 +1,7 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const user_router = require('./routes/userRouter')
-const admin_router = require('./routes/adminRouter')
+const admin_router = require('./routes/admin_routes/adminRouter')
 const index_router = require('./routes/indexRouter')
 const goodreads = express()
 
@@ -14,7 +14,7 @@ mongoose.connect('mongodb://localhost:27017/goodreads', { useNewUrlParser: true 
 })
 
 goodreads.listen(3000, () => {
-    console.log("goodreads app started on port 2000")
+    console.log("goodreads app started on port 3000")
 })
 
 goodreads.set('view engine', 'ejs');

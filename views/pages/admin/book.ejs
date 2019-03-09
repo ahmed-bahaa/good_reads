@@ -24,10 +24,18 @@
             <%=book.description%>
         </td>
         <td> 
+            <% if (book.author_id == null ) { %>
+            <%=""%>    
+            <%}else{%>
             <%=book.author_id.fname + book.author_id.lname%>
+            <%}%>
         </td>
         <td> 
+            <% if (book.category_id == null ) { %>
+            <%=""%>    
+            <%}else{%>
             <%=book.category_id.name%>
+            <%}%>
         </td>
         <td>
            <form method="GET" action="/admin/book/:<%=book._id%>/edit" style="display:inline">
