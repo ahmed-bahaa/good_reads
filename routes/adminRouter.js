@@ -1,7 +1,8 @@
 const express = require("express")
 const category_model = require('../models/category.js')
+const author_model = require('../models/author')
 const admin_router = express.Router()
-
+//=================== CATEGORY ROUTES ===================
 //======================== GET ==========================
 
 
@@ -85,5 +86,93 @@ admin_router.get( '/category/:id/delete', async(req,res)=>{
     }})
 
 //======================== PUT ==========================
+//====================== CATEGORY =======================
+
+
+
+//=======================================================
+//===================== AUTHORS =========================
+
+//====================== GET ============================
+admin_router.get( '/author/new',(req,res)=>{
+    
+    res.render('../views/pages/admin/author_form.ejs')
+})
+
+
+// lists authors
+admin_router.get('/author/', async (req,res)=>{
+    try
+    {
+        const authors = await author_model.find({})
+       // res.send(categories)
+        res.render('../views/pages/admin/author.ejs', {authors:authors,})
+    }
+    catch(e){
+        console.log(e)
+    }
+})
+
+
+//redirects from update button
+admin_router.get('/author/:id/edit', async (req,res)=>{
+
+    try{
+        console.log(req.params.id.replace(":",""))
+        const selected_author=  await author_model.findById(req.params.id.replace(":",""))
+        res.render('../views/pages/admin/author_form.ejs',{author:selected_author})
+
+    }
+    catch(e){
+        console.log(e)
+    }
+
+})
+
+admin_router.get( '/author/:id/delete', async(req,res)=>{
+    try
+    {      
+        console.log(req.params.id)
+        const deleted_author = await author_model.findByIdAndRemove(req.params.id.replace(":",""))
+        const authors = await author_model.find({}) 
+        res.render('../views/pages/admin/author.ejs', {authors:authors,})
+    }
+    catch( err ){
+        console.log( err )
+    }})
+
+//====================== POST ===========================
+
+
+admin_router.post( '/author/:id/add', async(req,res)=>{
+    try
+    {
+        //console.log(req.body.fname)
+        const new_author = await author_model.create({ fname:req.body.fname, lname:req.body.lname , author_photo:req.body.author_photo, birth_date: req.body.birth_date})
+        const authors = await author_model.find({}) 
+        res.render('../views/pages/admin/author.ejs', {authors:authors,})
+    }
+    catch( err ){
+        console.log( err )
+    }})
+
+
+//redirects from update button
+admin_router.post('/author/:id/edit', async (req,res)=>{
+
+    try{
+        console.log("yeaaah")
+        const updated_author = await author_model.findByIdAndUpdate(req.params.id.replace(":",""), req.body, {new: true})
+        const authors = await author_model.find({})
+        res.render('../views/pages/admin/author.ejs', {authors:authors,})
+    }
+    catch(e){
+        console.log(e)
+    }
+
+})
+
+//===================== AUTHORS =========================
+//=======================================================
 
 module.exports = admin_router
