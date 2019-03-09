@@ -1,0 +1,43 @@
+<% include ../layout/header %>
+
+<h3> category Page </h3>
+
+
+<table border="2px">
+
+    <tr>
+        <th> ID </th>
+        <th> Photo </th>
+        <th> First Name </th>
+        <th> Second Name </th>
+        <th> Birth Date </th>
+        <th> Actions </th>
+    </tr>
+    <% authors.forEach((author) =>{ %>
+    <tr>
+        <td> 
+            <%=author.id%>
+        </td>
+        <td> 
+            <%=author.author_photo%>
+        </td>
+        <td> 
+            <%=author.fname%>
+        </td>
+        <td> 
+            <%=author.lname%>
+        </td>
+        <td> 
+            <%=author.birth_date%>
+        </td>
+        <td>
+           <form method="GET" action="/admin/author/:<%=author.id%>/edit" style="display:inline">
+                <input type="submit" name="update" value="update">
+            </form> 
+            <button onclick="window.location.href='/admin/author/:<%=author.id%>/delete'">delete</button>
+        </td>
+    </tr>
+<% }) %>
+</table>
+
+<% include ../layout/footer %>

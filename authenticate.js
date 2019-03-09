@@ -7,9 +7,9 @@ var User=require('./models/user')
 var config = require('./config')
 
 
-exports.local = passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+exports.local = passport.use(User.createStrategy());
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
 
 exports.getToken = function(user) {
     secret_key='123-456-789'

@@ -1,0 +1,14 @@
+<% if(locals.data){%>
+        <h1>ed</h1>
+<form method="POST" action="/admin/category/:<%=locals.data._id%>/edit">
+        Name:<br>
+        <input type="text" name="name" placeholder="<%=locals.data.name%>">  <br>
+        <input type="submit" name="submit">
+</form>
+<% } else{%> 
+<form method="POST" action="/admin/category/:id/add">
+        Name:<br>
+        <input type="text" name="name"><br>
+        <input type="submit" name="submit">
+</form>
+<%}%>

@@ -1,0 +1,31 @@
+<% include ../layout/header %>
+
+<h3> category Page </h3>
+
+
+<table border="2px">
+
+    <tr>
+        <th> ID </th>
+        <th> Name </th>
+        <th> Actions </th>
+    </tr>
+    <% categories.forEach((category) =>{ %>
+    <tr>
+        <td> 
+            <%=category.id%>
+        </td>
+        <td> 
+            <%=category.name%>
+        </td>
+        <td>
+           <form method="GET" action="/admin/category/:<%=category.id%>/edit" style="display:inline">
+                <input type="submit" name="update" value="update">
+            </form> 
+            <button onclick="window.location.href='/admin/category/:<%=category.id%>/delete'">delete</button>
+        </td>
+    </tr>
+<% }) %>
+</table>
+
+<% include ../layout/footer %>
