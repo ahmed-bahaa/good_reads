@@ -1,5 +1,5 @@
-<% include ../../layout/header %>
 
+<button onclick="window.location.href='/admin/book/new'">add</button>
 <h3> Book Page </h3>
 
 
@@ -24,10 +24,10 @@
             <%=book.description%>
         </td>
         <td> 
-            <%=book.author_id._id%>
+            <%=book.author_id.fname + book.author_id.lname%>
         </td>
         <td> 
-            <%=book.category_id._id%>
+            <%=book.category_id.name%>
         </td>
         <td>
            <form method="GET" action="/admin/book/:<%=book._id%>/edit" style="display:inline">
