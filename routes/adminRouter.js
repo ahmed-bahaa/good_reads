@@ -42,7 +42,7 @@ admin_router.get('/category/:id/edit', async (req,res)=>{
 })
 
 admin_router.get('/signin', async (req, res) => {
-    res.render('pages/signin-form', {userType: 'admin'});
+    res.render('pages/admin/signin-form', {userType: 'admin'});
 });
 
 //======================== POST =========================
