@@ -10,7 +10,7 @@ user_router.get('/signup', async (req, res) => {
 });
 
 user_router.get('/signin', async (req, res) => {
-    res.render('pages/signin-form', {userType: 'user'});
+    res.render('pages/user/signin-form', {userType: 'user'});
 });
 //======================== POST =========================
 user_router.post('/signup', upload.single('avatar'), async (req, res) => {
