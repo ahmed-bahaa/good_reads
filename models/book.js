@@ -17,9 +17,9 @@ const book_schema = new mongoose.Schema({
 
 const book_model = mongoose.model("book", book_schema );
 
-// postsModel.create({ title:"post 1" , body:"hello" , userId:"5c7eddedbcacb34a42a33ace"})
+//  book_model.create({ name:"book 2" , cover:"hello" ,description:"bla bal" ,author_id:"5c82d840c82d953bb7b4c933" ,category_id:"5c81510016bb813e162ed376",reviews:[] })
 
-
+// console.log(book_model.find({}))
 
 module.exports=book_model;
 

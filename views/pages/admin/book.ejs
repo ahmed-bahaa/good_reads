@@ -1,0 +1,42 @@
+<% include ../../layout/header %>
+
+<h3> Book Page </h3>
+
+
+<table border="2px">
+
+    <tr>
+        <th> Name </th>
+        <th> Cover </th>
+        <th> Description </th>
+        <th> Author </th>
+        <th> Category </th>
+    </tr>
+    <% books.forEach((book) =>{ %>
+    <tr>
+        <td> 
+            <%=book.name%>
+        </td>
+        <td> 
+            <%=book.cover%>
+        </td>
+        <td> 
+            <%=book.description%>
+        </td>
+        <td> 
+            <%=book.author_id._id%>
+        </td>
+        <td> 
+            <%=book.category_id._id%>
+        </td>
+        <td>
+           <form method="GET" action="/admin/book/:<%=book._id%>/edit" style="display:inline">
+                <input type="submit" name="update" value="update">
+            </form> 
+            <button onclick="window.location.href='/admin/book/:<%=book._id%>/delete'">delete</button>
+        </td>
+    </tr>
+<% }) %>
+</table>
+
+<% include ../../layout/footer %>
