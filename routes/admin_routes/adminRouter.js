@@ -1,8 +1,9 @@
 const express = require("express")
-const category_model = require('../models/category.js')
-const admin_model = require('../models/admin.js');
+const category_model = require('../../models/category.js')
+const admin_model = require('../../models/admin.js');
+const author_model = require('../../models/author.js');
 const admin_router = express.Router()
-var authenticate = require('../authenticate');
+var authenticate = require('../../authenticate');
 var passport = require('passport');
 //=================== CATEGORY ROUTES ===================
 
@@ -11,7 +12,7 @@ var passport = require('passport');
 
 admin_router.get( '/category/new',(req,res)=>{
     //res.send("add new user");
-    res.render('../views/pages/category_update_form.ejs')
+    res.render('../views/pages/admin/category_form.ejs')
 })
 
 
@@ -21,7 +22,7 @@ admin_router.get('/category/', async (req,res)=>{
     {
         const categories = await category_model.find({})
        // res.send(categories)
-        res.render('../views/pages/category.ejs', {categories:categories,})
+        res.render('../views/pages/admin/category.ejs', {categories:categories,})
     }
     catch(e){
         console.log(e)
@@ -34,7 +35,7 @@ admin_router.get('/category/:id/edit', async (req,res)=>{
     try{
         console.log(req.params.id.replace(":",""))
         const selected_category=  await category_model.findById(req.params.id.replace(":",""))
-        res.render('../views/pages/category_update_form.ejs',{data:selected_category})
+        res.render('../views/pages/admin/category_form.ejs',{data:selected_category})
 
     }
     catch(e){
@@ -55,7 +56,7 @@ admin_router.post( '/category/:id/add', async(req,res)=>{
         //console.log(req.body.fname)
         const new_category = await category_model.create({ username: req.body.username,  password: req.body.password, name:req.body.name})
         const categories = await category_model.find({}) 
-        res.render('../views/pages/category.ejs', {categories:categories,})
+        res.render('../views/pages/admin/category.ejs', {categories:categories,})
     }
     catch( err ){
         console.log( err )
@@ -69,7 +70,7 @@ admin_router.post('/category/:id/edit', async (req,res)=>{
         console.log("yeaaah")
         const updated_category = await category_model.findByIdAndUpdate(req.params.id.replace(":",""), req.body, {new: true})
         const categories = await category_model.find({})
-        res.render('../views/pages/category.ejs', {categories:categories,})
+        res.render('../views/pages/admin/category.ejs', {categories:categories,})
     }
     catch(e){
         console.log(e)
@@ -121,7 +122,7 @@ admin_router.get( '/category/:id/delete', async(req,res)=>{
         console.log(req.params.id)
         const deleted_category = await category_model.findByIdAndRemove(req.params.id.replace(":",""))
         const categories = await category_model.find({}) 
-        res.render('../views/pages/category.ejs', {categories:categories,})
+        res.render('../views/pages/admin/category.ejs', {categories:categories,})
     }
     catch( err ){
         console.log( err )
