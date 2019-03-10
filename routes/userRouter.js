@@ -6,13 +6,7 @@ var upload = multer({ dest: 'public/uploads/user-avatar' })
 var authenticate = require('../authenticate');
 var passport = require('passport');
 //======================== GET ==========================
-user_router.get('/signup', async (req, res) => {
-    res.render('pages/user/signup-form');
-});
 
-user_router.get('/signin', async (req, res) => {
-    res.render('pages/signin-form', { userType: 'user' });
-});
 //======================== POST =========================
 user_router.post('/signup', upload.single('avatar'), (req, res, next) => {
 

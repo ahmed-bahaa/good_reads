@@ -5,93 +5,93 @@ const author_model = require('../../models/author.js');
 const admin_router = express.Router()
 var authenticate = require('../../authenticate');
 var passport = require('passport');
+var multer = require('multer');
+var upload_author = multer({ dest: 'public/uploads/author-avatar' });
 //=================== CATEGORY ROUTES ===================
 
 //======================== GET ==========================
 
-
-admin_router.get( '/category/new',(req,res)=>{
+admin_router.get('/category/new', (req, res) => {
     //res.send("add new user");
     res.render('../views/pages/admin/category_form.ejs')
 })
 
 
 // lists categories
-admin_router.get('/category/', async (req,res)=>{
-    try
-    {
+admin_router.get('/category/', async (req, res) => {
+    try {
         const categories = await category_model.find({})
-       // res.send(categories)
-        res.render('../views/pages/admin/category.ejs', {categories:categories,})
+        // res.send(categories)
+        res.render('../views/pages/admin/category.ejs', { categories: categories, })
     }
-    catch(e){
+    catch (e) {
         console.log(e)
     }
 })
 
 //redirects from update button
-admin_router.get('/category/:id/edit', async (req,res)=>{
+admin_router.get('/category/:id/edit', async (req, res) => {
 
-    try{
-        console.log(req.params.id.replace(":",""))
-        const selected_category=  await category_model.findById(req.params.id.replace(":",""))
-        res.render('../views/pages/admin/category_form.ejs',{data:selected_category})
+    try {
+        console.log(req.params.id.replace(":", ""))
+        const selected_category = await category_model.findById(req.params.id.replace(":", ""))
+        res.render('../views/pages/admin/category_form.ejs', { data: selected_category })
 
     }
-    catch(e){
+    catch (e) {
         console.log(e)
     }
 
 })
 
 admin_router.get('/signin', async (req, res) => {
-    res.render('pages/admin/signin-form', {userType: 'admin'});
+    res.render('pages/admin/signin-form', { userType: 'admin' });
 });
 
 //======================== POST =========================
 
-admin_router.post( '/category/:id/add', async(req,res)=>{
-    try
-    {
+admin_router.post('/category/:id/add', async (req, res) => {
+    try {
         //console.log(req.body.fname)
-        const new_category = await category_model.create({ username: req.body.username,  password: req.body.password, name:req.body.name})
-        const categories = await category_model.find({}) 
-        res.render('../views/pages/admin/category.ejs', {categories:categories,})
+        const new_category = await category_model.create({ username: req.body.username, password: req.body.password, name: req.body.name })
+        const categories = await category_model.find({})
+        res.render('../views/pages/admin/category.ejs', { categories: categories, })
     }
-    catch( err ){
-        console.log( err )
-    }})
+    catch (err) {
+        console.log(err)
+    }
+})
 
 
 //redirects from update button
-admin_router.post('/category/:id/edit', async (req,res)=>{
+admin_router.post('/category/:id/edit', async (req, res) => {
 
-    try{
+    try {
         console.log("yeaaah")
-        const updated_category = await category_model.findByIdAndUpdate(req.params.id.replace(":",""), req.body, {new: true})
+        const updated_category = await category_model.findByIdAndUpdate(req.params.id.replace(":", ""), req.body, { new: true })
         const categories = await category_model.find({})
-        res.render('../views/pages/admin/category.ejs', {categories:categories,})
+        res.render('../views/pages/admin/category.ejs', { categories: categories, })
     }
-    catch(e){
+    catch (e) {
         console.log(e)
     }
 
 })
 /// edit 
-admin_router.post('/signin', passport.authenticate('local') , (req, res) => {
-    
-    var token = authenticate.getToken({_id: req.user._id});
+admin_router.post('/signin', passport.authenticate('local'), (req, res) => {
+
+    var token = authenticate.getToken({ _id: req.user._id });
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
-    res.json({success: true,token: token ,status: 'You are successfully logged in!'});
+    res.json({ success: true, token: token, status: 'You are successfully logged in!' });
 
 });
-admin_router.post('/signup',(req, res)=> {
+admin_router.post('/signup', (req, res) => {
 
     admin_model.register(new admin_model({
         username: req.body.username,
-        name:req.body.name
-    }), req.body.password, (err, user) =>{
+        name: req.body.name
+    }), req.body.password, (err, user) => {
         if (err) {
             res.statusCode = 500;
             res.setHeader('Content-Type', 'application/json');
@@ -103,30 +103,30 @@ admin_router.post('/signup',(req, res)=> {
                 res.setHeader('Content-Type', 'application/json');
                 res.json({ success: true, status: 'Registration Successful!' });
             });
-        }  
-    });  
-    
-   });
+        }
+    });
+
+});
 // router.post('/login', passport.authenticate('local'), (req, res) => {
- //   var token = authenticate.getToken({_id: req.user._id});
- //   res.statusCode = 200;
- //  res.setHeader('Content-Type', 'application/json');
+//   var token = authenticate.getToken({_id: req.user._id});
+//   res.statusCode = 200;
+//  res.setHeader('Content-Type', 'application/json');
 //    res.json({success: true,token: token ,status: 'You are successfully logged in!'});
 //   });
-  
+
 //======================== DELETE =======================
 
-admin_router.get( '/category/:id/delete', async(req,res)=>{
-    try
-    {      
+admin_router.get('/category/:id/delete', async (req, res) => {
+    try {
         console.log(req.params.id)
-        const deleted_category = await category_model.findByIdAndRemove(req.params.id.replace(":",""))
-        const categories = await category_model.find({}) 
-        res.render('../views/pages/admin/category.ejs', {categories:categories,})
+        const deleted_category = await category_model.findByIdAndRemove(req.params.id.replace(":", ""))
+        const categories = await category_model.find({})
+        res.render('../views/pages/admin/category.ejs', { categories: categories, })
     }
-    catch( err ){
-        console.log( err )
-    }})
+    catch (err) {
+        console.log(err)
+    }
+})
 
 //======================== PUT ==========================
 //====================== CATEGORY =======================
@@ -136,86 +136,100 @@ admin_router.get( '/category/:id/delete', async(req,res)=>{
 //=======================================================
 //===================== AUTHORS =========================
 
-//====================== GET ============================
-admin_router.get( '/author/new',(req,res)=>{
-    
-    res.render('../views/pages/admin/author_form.ejs')
-})
-
-
 // lists authors
-admin_router.get('/author/', async (req,res)=>{
-    try
-    {
+admin_router.get('/authors/', async (req, res) => {
+    try {
+        const authors = await author_model.find({});
+        res.json({
+            status: "failure",
+            data: authors
+        });
+    }
+    catch (e) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+})
+
+
+//get specific author
+admin_router.get('/authors/:id', async (req, res) => {
+    try {
+        const selected_author = await author_model.findById(req.params.id.replace(":", ""));
+        res.json({
+            status: "failure",
+            data: selected_author
+        });
+    }
+    catch (e) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+
+})
+
+//delete author
+admin_router.delete('/authors/:id', async (req, res) => {
+    try {
+        await author_model.findByIdAndRemove(req.params.id.replace(":", ""));
+        const authors = await author_model.find({});
+        res.json({
+            status: "failure",
+            data: authors
+        });
+    }
+    catch (err) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+})
+
+//create new author
+admin_router.post('/authors', upload_author.single('avatar'),  async (req, res) => {
+    try {
+        let image = req.file ? req.file.filename : null;
+        const new_author = await author_model.create({ fname: req.body.fname, lname: req.body.lname, author_photo: image, birth_date: req.body.birth_date })
         const authors = await author_model.find({})
-       // res.send(categories)
-        res.render('../views/pages/admin/author.ejs', {authors:authors,})
+        res.json({
+             status: "success",
+             data: authors
+         });
     }
-    catch(e){
-        console.log(e)
+    catch (err) {
+        res.json({
+            status: "failure",
+            data: err
+        });
     }
 })
 
+//update author
+admin_router.put('/authors/:id', async (req, res) => {
 
-//redirects from update button
-admin_router.get('/author/:id/edit', async (req,res)=>{
-
-    try{
-        console.log(req.params.id.replace(":",""))
-        const selected_author=  await author_model.findById(req.params.id.replace(":",""))
-        res.render('../views/pages/admin/author_form.ejs',{author:selected_author})
-
+    try {
+        const updated_author = await author_model.findByIdAndUpdate(req.params.id.replace(":", ""), req.body, { new: true })
+        // const authors = await author_model.find({})
+        res.json({
+            status: "success",
+            data: updated_author
+        });
     }
-    catch(e){
-        console.log(e)
-    }
-
-})
-
-admin_router.get( '/author/:id/delete', async(req,res)=>{
-    try
-    {      
-        console.log(req.params.id)
-        const deleted_author = await author_model.findByIdAndRemove(req.params.id.replace(":",""))
-        const authors = await author_model.find({}) 
-        res.render('../views/pages/admin/author.ejs', {authors:authors,})
-    }
-    catch( err ){
-        console.log( err )
-    }})
-
-//====================== POST ===========================
-
-
-admin_router.post( '/author/:id/add', async(req,res)=>{
-    try
-    {
-        //console.log(req.body.fname)
-        const new_author = await author_model.create({ fname:req.body.fname, lname:req.body.lname , author_photo:req.body.author_photo, birth_date: req.body.birth_date})
-        const authors = await author_model.find({}) 
-        res.render('../views/pages/admin/author.ejs', {authors:authors,})
-    }
-    catch( err ){
-        console.log( err )
-    }})
-
-
-//redirects from update button
-admin_router.post('/author/:id/edit', async (req,res)=>{
-
-    try{
-        console.log("yeaaah")
-        const updated_author = await author_model.findByIdAndUpdate(req.params.id.replace(":",""), req.body, {new: true})
-        const authors = await author_model.find({})
-        res.render('../views/pages/admin/author.ejs', {authors:authors,})
-    }
-    catch(e){
-        console.log(e)
+    catch (e) {
+        res.json({
+            status: "failure",
+            data: err
+        });
     }
 
 })
 
-//===================== AUTHORS =========================
+//===================== /AUTHORS =========================
 //=======================================================
 
 
