@@ -2,11 +2,13 @@ const express = require("express")
 const category_model = require('../../models/category.js')
 const admin_model = require('../../models/admin.js');
 const author_model = require('../../models/author.js');
+const book_model = require('../../models/book.js');
 const admin_router = express.Router()
 var authenticate = require('../../authenticate');
 var passport = require('passport');
 var multer = require('multer');
 var upload_author = multer({ dest: 'public/uploads/author-avatar' });
+var upload_book = multer({ dest: 'public/uploads/book-cover' });
 //=================== CATEGORY ROUTES ===================
 
 //======================== GET ==========================
@@ -142,7 +144,7 @@ admin_router.delete('/authors/:id', async (req, res) => {
         await author_model.findByIdAndRemove(req.params.id.replace(":", ""));
         const authors = await author_model.find({});
         res.json({
-            status: "failure",
+            status: "success",
             data: authors
         });
     }
@@ -155,15 +157,15 @@ admin_router.delete('/authors/:id', async (req, res) => {
 })
 
 //create new author
-admin_router.post('/authors', upload_author.single('avatar'),  async (req, res) => {
+admin_router.post('/authors', upload_author.single('avatar'), async (req, res) => {
     try {
         let image = req.file ? req.file.filename : null;
         const new_author = await author_model.create({ fname: req.body.fname, lname: req.body.lname, author_photo: image, birth_date: req.body.birth_date })
         const authors = await author_model.find({})
         res.json({
-             status: "success",
-             data: authors
-         });
+            status: "success",
+            data: authors
+        });
     }
     catch (err) {
         res.json({
@@ -178,10 +180,10 @@ admin_router.put('/authors/:id', async (req, res) => {
 
     try {
         const updated_author = await author_model.findByIdAndUpdate(req.params.id.replace(":", ""), req.body, { new: true })
-        // const authors = await author_model.find({})
+        const authors = await author_model.find({})
         res.json({
             status: "success",
-            data: updated_author
+            data: authors
         });
     }
     catch (e) {
@@ -196,6 +198,71 @@ admin_router.put('/authors/:id', async (req, res) => {
 //===================== /AUTHORS =========================
 //=======================================================
 
+//=======================================================
+//===================== Books =========================
+
+//delete author
+admin_router.delete('/books/:id', async (req, res) => {
+    try {
+        await book_model.findByIdAndRemove(req.params.id.replace(":", ""));
+        const books = await book_model.find({});
+        res.json({
+            status: "success",
+            data: books
+        });
+    }
+    catch (err) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+})
+
+//create new book
+admin_router.post('/books', upload_book.single('cover'), async (req, res) => {
+    try {
+        let image = req.file ? req.file.filename : null;
+        await book_model.create({
+            name: req.body.name, description: req.body.description, cover: image, author_id: req.body.author_id,
+            category_id: req.body.category_id
+        })
+        const books = await book_model.find({})
+        res.json({
+            status: "success",
+            data: books
+        });
+    }
+    catch (err) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+})
+
+//update book
+admin_router.put('/books/:id', async (req, res) => {
+
+    try {
+        const updated_book = await book_model.findByIdAndUpdate(req.params.id.replace(":", ""), req.body, { new: true })
+        const books = await book_model.find({})
+        res.json({
+            status: "success",
+            data: books
+        });
+    }
+    catch (e) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+
+})
+
+//===================== /Books =========================
+//=======================================================
 
 
 

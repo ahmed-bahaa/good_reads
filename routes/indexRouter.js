@@ -3,7 +3,6 @@ const index_router = express.Router()
 const category = require('../models/category')
 const author = require('../models/author')
 const book = require('../models/book')
-
 index_router.get('/index',async(req,res,)=>{
     try
     {
@@ -20,8 +19,78 @@ index_router.get('/index',async(req,res,)=>{
     
 })
 
+//===================== AUTHORS =========================
 
+// lists authors
+index_router.get('/authors/', async (req, res) => {
+    try {
+        const authors = await author.find({});
+        res.json({
+            status: "failure",
+            data: authors
+        });
+    }
+    catch (e) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+})
 
+//get specific author
+index_router.get('/authors/:id', async (req, res) => {
+    try {
+        const selected_author = await author.findById(req.params.id.replace(":", ""));
+        res.json({
+            status: "failure",
+            data: selected_author
+        });
+    }
+    catch (e) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+})
+
+//===================== Books =========================
+
+// lists books
+index_router.get('/books', async (req, res) => {
+    try {
+        const books = await book.find({});
+        res.json({
+            status: "success",
+            data: books
+        });
+    }
+    catch (e) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+})
+
+//get specific author
+index_router.get('/books/:id', async (req, res) => {
+    try {
+        await book.findById(req.params.id.replace(":", ""));
+        const books = await book.find({});
+        res.json({
+            status: "success",
+            data: books
+        });
+    }
+    catch (e) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+})
 
 
 
