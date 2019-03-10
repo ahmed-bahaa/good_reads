@@ -1,8 +1,12 @@
 const express = require("express")
 const index_router = express.Router()
-const category = require('../models/category')
-const author = require('../models/author')
-const book = require('../models/book')
+const category = require('../models/category');
+const author = require('../models/author');
+const book = require('../models/book');
+const category_model = require('../models/category.js');
+
+
+
 index_router.get('/index',async(req,res,)=>{
     try
     {
@@ -93,6 +97,25 @@ index_router.get('/books/:id', async (req, res) => {
 })
 
 
+
+//===================== Categories =========================
+
+// lists categories
+index_router.get('/categories', async (req, res) => {
+    try {
+        const books = await category_model.find({});
+        res.json({
+            status: "success",
+            data: categories
+        });
+    }
+    catch (e) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+})
 
 
 

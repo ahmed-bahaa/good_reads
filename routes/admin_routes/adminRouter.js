@@ -9,77 +9,10 @@ var passport = require('passport');
 var multer = require('multer');
 var upload_author = multer({ dest: 'public/uploads/author-avatar' });
 var upload_book = multer({ dest: 'public/uploads/book-cover' });
-//=================== CATEGORY ROUTES ===================
-
-//======================== GET ==========================
-
-admin_router.get('/category/new', (req, res) => {
-    //res.send("add new user");
-    res.render('../views/pages/admin/category_form.ejs')
-})
 
 
-// lists categories
-admin_router.get('/category/', async (req, res) => {
-    try {
-        const categories = await category_model.find({})
-        // res.send(categories)
-        res.render('../views/pages/admin/category.ejs', { categories: categories, })
-    }
-    catch (e) {
-        console.log(e)
-    }
-})
 
-//redirects from update button
-admin_router.get('/category/:id/edit', async (req, res) => {
-
-    try {
-        console.log(req.params.id.replace(":", ""))
-        const selected_category = await category_model.findById(req.params.id.replace(":", ""))
-        res.render('../views/pages/admin/category_form.ejs', { data: selected_category })
-
-    }
-    catch (e) {
-        console.log(e)
-    }
-
-})
-
-admin_router.get('/signin', async (req, res) => {
-    res.render('pages/admin/signin-form', { userType: 'admin' });
-});
-
-//======================== POST =========================
-
-admin_router.post('/category/:id/add', async (req, res) => {
-    try {
-        //console.log(req.body.fname)
-        const new_category = await category_model.create({ username: req.body.username, password: req.body.password, name: req.body.name })
-        const categories = await category_model.find({})
-        res.render('../views/pages/admin/category.ejs', { categories: categories, })
-    }
-    catch (err) {
-        console.log(err)
-    }
-})
-
-
-//redirects from update button
-admin_router.post('/category/:id/edit', async (req, res) => {
-
-    try {
-        console.log("yeaaah")
-        const updated_category = await category_model.findByIdAndUpdate(req.params.id.replace(":", ""), req.body, { new: true })
-        const categories = await category_model.find({})
-        res.render('../views/pages/admin/category.ejs', { categories: categories, })
-    }
-    catch (e) {
-        console.log(e)
-    }
-
-})
-/// edit 
+//==========================admin authentication =============================
 admin_router.post('/signin', passport.authenticate('local'), (req, res) => {
 
     var token = authenticate.getToken({ _id: req.user._id });
@@ -116,26 +49,67 @@ admin_router.post('/signup', (req, res) => {
 //    res.json({success: true,token: token ,status: 'You are successfully logged in!'});
 //   });
 
-//======================== DELETE =======================
 
-admin_router.get('/category/:id/delete', async (req, res) => {
+//=================== CATEGORY ===================
+
+//create new category
+admin_router.post('/categories', async (req, res) => {
     try {
-        console.log(req.params.id)
-        const deleted_category = await category_model.findByIdAndRemove(req.params.id.replace(":", ""))
+        //console.log(req.body.fname)
+        await category_model.create({ name: req.body.name })
         const categories = await category_model.find({})
-        res.render('../views/pages/admin/category.ejs', { categories: categories, })
+        res.json({
+            status: "success",
+            data: categories
+        });
     }
     catch (err) {
-        console.log(err)
+        res.json({
+            status: "failure",
+            data: err
+        });
     }
 })
 
-//======================== PUT ==========================
-//====================== CATEGORY =======================
+//rupdate category
+admin_router.put('/categories/:id', async (req, res) => {
+
+    try {
+        await category_model.findByIdAndUpdate(req.params.id.replace(":", ""), req.body, { new: true })
+        const categories = await category_model.find({})
+        res.json({
+            status: "success",
+            data: categories
+        });
+    }
+    catch (err) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+
+})
+
+//delete category
+admin_router.delete('/categories/:id', async (req, res) => {
+    try {
+        await category_model.findByIdAndRemove(req.params.id.replace(":", ""))
+        const categories = await category_model.find({})
+        res.json({
+            status: "success",
+            data: categories
+        });
+    }
+    catch (err) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+})
 
 
-
-//=======================================================
 //===================== AUTHORS =========================
 
 //delete author
@@ -195,10 +169,7 @@ admin_router.put('/authors/:id', async (req, res) => {
 
 })
 
-//===================== /AUTHORS =========================
-//=======================================================
 
-//=======================================================
 //===================== Books =========================
 
 //delete author
@@ -260,9 +231,6 @@ admin_router.put('/books/:id', async (req, res) => {
     }
 
 })
-
-//===================== /Books =========================
-//=======================================================
 
 
 
