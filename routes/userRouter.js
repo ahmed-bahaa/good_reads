@@ -77,4 +77,9 @@ user_router.post('/create', async (req, res) => {
     }
 })
 
+//=================================user home page "hager"===================================
+user_router.get('/category',async(req,res)=>{
+
+})
+
 module.exports = user_router

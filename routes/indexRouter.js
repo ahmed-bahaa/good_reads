@@ -30,7 +30,7 @@ index_router.get('/authors/', async (req, res) => {
     try {
         const authors = await author.find({});
         res.json({
-            status: "failure",
+            status: "success",
             data: authors
         });
     }
