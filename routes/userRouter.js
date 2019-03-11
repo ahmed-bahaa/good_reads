@@ -9,12 +9,12 @@ var passport = require('passport');
 
 //======================== POST =========================
 user_router.post('/signup', upload.single('avatar'), (req, res, next) => {
-
+    let image= req.file ? req.file.filename : null
     user_model.register(new user_model({
         username: req.body.username,
         first_name: req.body.first_name,
         last_name: req.body.last_name,
-        image: req.file.filename
+        image: image
     }), req.body.password, (err, user) => {
         if (err) {
             res.statusCode = 500;
@@ -31,23 +31,23 @@ user_router.post('/signup', upload.single('avatar'), (req, res, next) => {
     })
 });
 user_router.post('/signin', passport.authenticate('local'), (req, res) => {
-    var token = authenticate.getToken({_id: req.user._id});
+    var token = authenticate.getToken({ _id: req.user._id });
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
-    res.json({success: true,token: token ,status: 'You are successfully logged in!'});
-  });
-  user_router.get('/logout', (req, res) => {
+    res.json({ success: true, token: token, status: 'You are successfully logged in!' });
+});
+user_router.get('/logout', (req, res) => {
     if (req.session) {
-      req.session.destroy();
-      res.clearCookie('session-id');
-      //redirect to home
+        req.session.destroy();
+        res.clearCookie('session-id');
+        //redirect to home
     }
     else {
-      var err = new Error('You are not logged in!');
-      res.statusCode = 403;
-      next(err);
+        var err = new Error('You are not logged in!');
+        res.statusCode = 403;
+        next(err);
     }
-  });  
+});
 
 
 
