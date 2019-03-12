@@ -4,6 +4,7 @@ const user_router = require('./routes/userRouter')
 const admin_router = require('./routes/admin_routes/adminRouter')
 const index_router = require('./routes/indexRouter')
 const goodreads = express()
+var passport = require('passport');
 
 const bodyParser = require('body-parser');
 goodreads.use(bodyParser.json());
@@ -18,6 +19,7 @@ goodreads.listen(3000, () => {
 })
 
 goodreads.set('view engine', 'ejs');
+goodreads.use(passport.initialize());
 
 goodreads.use(express.urlencoded())
 goodreads.use('/goodreads', index_router)

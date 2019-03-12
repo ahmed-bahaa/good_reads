@@ -5,22 +5,17 @@ var multer = require('multer')
 var upload = multer({ dest: 'public/uploads/user-avatar' })
 var authenticate = require('../authenticate');
 var passport = require('passport');
+const book_model = require('../models/book');
 //======================== GET ==========================
-user_router.get('/signup', async (req, res) => {
-    res.render('pages/user/signup-form');
-});
 
-user_router.get('/signin', async (req, res) => {
-    res.render('pages/signin-form', { userType: 'user' });
-});
 //======================== POST =========================
 user_router.post('/signup', upload.single('avatar'), (req, res, next) => {
-
+    let image= req.file ? req.file.filename : null
     user_model.register(new user_model({
         username: req.body.username,
         first_name: req.body.first_name,
         last_name: req.body.last_name,
-        image: req.file.filename
+        image: image
     }), req.body.password, (err, user) => {
         if (err) {
             res.statusCode = 500;
@@ -37,23 +32,23 @@ user_router.post('/signup', upload.single('avatar'), (req, res, next) => {
     })
 });
 user_router.post('/signin', passport.authenticate('local'), (req, res) => {
-    var token = authenticate.getToken({_id: req.user._id});
+    var token = authenticate.getToken({ _id: req.user._id });
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
-    res.json({success: true,token: token ,status: 'You are successfully logged in!'});
-  });
-  user_router.get('/logout', (req, res) => {
+    res.json({ success: true, token: token, status: 'You are successfully logged in!' });
+});
+user_router.get('/logout', (req, res) => {
     if (req.session) {
-      req.session.destroy();
-      res.clearCookie('session-id');
-      //redirect to home
+        req.session.destroy();
+        res.clearCookie('session-id');
+        //redirect to home
     }
     else {
-      var err = new Error('You are not logged in!');
-      res.statusCode = 403;
-      next(err);
+        var err = new Error('You are not logged in!');
+        res.statusCode = 403;
+        next(err);
     }
-  });  
+});
 
 
 
@@ -80,6 +75,25 @@ user_router.post('/create', async (req, res) => {
     }
     catch (err) {
         console.log(err)
+    }
+})
+
+//=================================user home page "hager"===================================
+//3ayza ashil el reviews list w a5liha key value pairs 3ady 3shan el rate kda hrg3 a3melo processing fl angular btri2a mot5lfa
+user_router.get('/all',async(req,res)=>{
+    try{
+        const all = await book_model.find().select(['cover','name','reviews'])
+        .populate('author_id').select(['fname','lname']);
+        res.json({
+            status: "success",
+            all:all})
+    }
+    catch(err)
+    {
+        res.json({
+            status : "failed",
+            error: err
+        });
     }
 })
 
