@@ -296,7 +296,7 @@ admin_router.get( '/book/:id/delete', async(req,res)=>{
     {      
         console.log(req.params.id)
         const deleted_book = await book_model.findByIdAndRemove(req.params.id.replace(":",""))
-        const books = await book_model.find({}) 
+        const books = await book_model.find({}).populate("author_id").populate("category_id")
 
         res.render('../views/pages/admin/book.ejs', {books:books,})
     }
