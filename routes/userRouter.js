@@ -5,6 +5,7 @@ var multer = require('multer')
 var upload = multer({ dest: 'public/uploads/user-avatar' })
 var authenticate = require('../authenticate');
 var passport = require('passport');
+const book_model = require('../models/book');
 //======================== GET ==========================
 
 //======================== POST =========================
@@ -78,8 +79,22 @@ user_router.post('/create', async (req, res) => {
 })
 
 //=================================user home page "hager"===================================
-user_router.get('/category',async(req,res)=>{
-
+//3ayza ashil el reviews list w a5liha key value pairs 3ady 3shan el rate kda hrg3 a3melo processing fl angular btri2a mot5lfa
+user_router.get('/all',async(req,res)=>{
+    try{
+        const all = await book_model.find().select(['cover','name','reviews'])
+        .populate('author_id').select(['fname','lname']);
+        res.json({
+            status: "success",
+            all:all})
+    }
+    catch(err)
+    {
+        res.json({
+            status : "failed",
+            error: err
+        });
+    }
 })
 
 module.exports = user_router
