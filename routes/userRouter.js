@@ -1,11 +1,13 @@
 const express = require("express")
 const user_model = require('../models/user');
+const user_books_model = require('../models/user_books');
 const user_router = express.Router()
 var multer = require('multer')
 var upload = multer({ dest: 'public/uploads/user-avatar' })
 var authenticate = require('../authenticate');
 var passport = require('passport');
 const book_model = require('../models/book');
+const user_books_model = require('../models/user_books');
 //======================== GET ==========================
 
 //======================== User Authentication =========================
@@ -54,12 +56,33 @@ user_router.get('/logout', (req, res) => {
 
 //======================== books and shelves ==========================
 
-user_router.post('/:user_id/read/:book_id', async (req, res) => {
+// add book to user with a specific shelve, if the book exists just change the shelve, if exists in the same shelve it doesn't do anything --new
+user_router.post('/:user_id/:shelve/:book_id', async (req, res) => {
     try {
-        res.json({
-            status: "success",
-            data: "dfghjk"
-        });
+        user_books_model.findOne({'book_id':req.params.book_id, 'user_id': req.params.user_id}, (err, doc)=>{
+            if(doc){
+                console.log(doc['shelve'])
+                if(doc['shelve'] == req.params.shelve){
+                    res.json({
+                        status: "success",
+                        data: "already exists and in the "+ req.params.shelve
+                    });
+                } else {
+                    user_books_model.findOneAndUpdate({'book_id':req.params.book_id, 'user_id': req.params.user_id}, {'shelve': req.params.shelve}, (err, doc) => {
+                        res.json({
+                            status: "success",
+                            data: "updated successfully to shelve  "+ req.params.shelve
+                        });
+                    })
+                }
+            } else {
+                user_books_model.create({"book_id":req.params.book_id, "user_id": req.params.user_id, "shelve": req.params.shelve});
+                res.json({
+                    status: "success",
+                    data: "created "+ req.params.shelve
+                });
+            }
+        }).select('shelve');
     }
     catch (err) {
         res.json({
@@ -68,6 +91,24 @@ user_router.post('/:user_id/read/:book_id', async (req, res) => {
         });
     }
 });
+
+// delete book from user --new
+user_router.delete('/:user_id/:book_id', (req, res) => {
+    user_books_model.remove({'book_id': req.params.book_id, 'user_id': req.params.user_id}, (err)=>{
+        if(err){
+            console.log(err)
+            res.json({
+                status: "failure",
+                data: err
+            });
+        } else {
+            res.json({
+                status: "success"
+            });
+        }
+    })
+});
+
 
 //======================== Nada betgarrab el database schema ==========================
 
@@ -111,13 +152,18 @@ user_router.post('/create', async (req, res) => {
 
 //=================================user home page "hager"===================================
 //3ayza ashil el reviews list w a5liha key value pairs 3ady 3shan el rate kda hrg3 a3melo processing fl angular btri2a mot5lfa
-user_router.get('/all',async(req,res)=>{
+user_router.get('/all',authenticate.verifyUser,async(req,res)=>{
+    // db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$avg : "$likes"}}}])
     try{
-        const all = await book_model.find().select(['cover','name','reviews'])
-        .populate('author_id').select(['fname','lname']);
+        const all = await user_books_model.find({user_id:req.user._id}).select('rate shelve').populate('book_id')
+        .select('name cover').populate('book_id.author_id').select('fname lname')
+        const avg_rate = await user_books_model.aggregate([{$group:{_id:req.user._id,avg_rate:{$avg:'rate'}}}])
+        // const all1 = await book_model.find().select(['cover','name','reviews'])
+        // .populate('author_id').select(['fname','lname']);
         res.json({
             status: "success",
-            all:all})
+            all:all,
+            avg_rate:avg_rate})
     }
     catch(err)
     {
@@ -128,4 +174,9 @@ user_router.get('/all',async(req,res)=>{
     }
 })
 
+// {
+//     "name":"docker",
+//     "author_id":"5c8956fca790f35c9722e103",
+//     "category_id":"5c8153446e31282c78843cbc"
+// }
 module.exports = user_router
