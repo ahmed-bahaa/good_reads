@@ -23,8 +23,8 @@ const userSchema = mongoose.Schema({
     image: { type: "string" },
     books: [
         {
-            book: { type: mongoose.Schema.Types.ObjectId, ref: 'book' },
-            shelve: ['Read', 'Currently Reading', 'Want to Read'],
+            _id: { type: mongoose.Schema.Types.ObjectId, ref: 'book' },
+            shelve: "string",
             rate: "number"
         }
     ]

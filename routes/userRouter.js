@@ -5,9 +5,8 @@ var multer = require('multer')
 var upload = multer({ dest: 'public/uploads/user-avatar' })
 var authenticate = require('../authenticate');
 var passport = require('passport');
-//======================== GET ==========================
 
-//======================== POST =========================
+//======================== User Authentication =========================
 user_router.post('/signup', upload.single('avatar'), (req, res, next) => {
     let image= req.file ? req.file.filename : null
     user_model.register(new user_model({
@@ -51,10 +50,46 @@ user_router.get('/logout', (req, res) => {
 
 
 
-//======================== PUT ==========================
+//======================== books and shelves ==========================
 
+user_router.post('/:user_id/read/:book_id', async (req, res) => {
+    try {
+        // await user_model.findByIdAndUpdate(req.params.user_id, {$addToSet: {books: {book:req.params.book_id, shelve: 'Read'} } } );
+        const books = await user_model.find({_id: req.params.user_id} ).select("books.book")
+        var isInArray = books.some(function (book) {
+            res.send(book._id);
+        });
+        res.json({
+            status: "success",
+            data: books
+        });
+    }
+    catch (err) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+});
 
 //======================== Nada betgarrab el database schema ==========================
+
+user_router.get('/users', async (req, res) => {
+    try {
+        const users = await user_model.find({});
+        res.json({
+            status: "success",
+            data: users
+        });
+    }
+    catch (err) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+});
+
 user_router.post('/create', async (req, res) => {
     try {
         const user = new user_model({
