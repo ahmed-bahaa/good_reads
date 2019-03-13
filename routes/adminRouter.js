@@ -344,15 +344,16 @@ admin_router.get('/book/new', async (req, res) => {
 })
 
 // add new book 
-admin_router.post('/book/:id/add', async (req, res) => {
-    try {
-        const new_book = await book_model.create({
-            name: req.body.name,
-            cover: req.body.cover,
-            description: req.body.description,
-            author_id: req.body.author_id,
-            category_id: req.body.category_id
-        })
+
+admin_router.post( '/book/add', async(req,res)=>{
+    try
+    {
+        const new_book = await book_model.create({ 
+                        name:req.body.name,
+                        cover:req.body.cover,
+                        description:req.body.description,
+                        author_id:req.body.author_id,
+                        category_id:req.body.category_id})
         const books = await book_model.find({}).populate("author_id").populate("category_id")
         res.render('../views/pages/admin/book.ejs', { books: books, })
     }
