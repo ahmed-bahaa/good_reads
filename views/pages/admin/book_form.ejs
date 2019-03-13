@@ -1,0 +1,67 @@
+<% if(locals.book){%>
+    <h3>Update book</h3>
+<form method="POST" action="/admin/book/:<%=locals.book._id%>/edit">
+    
+    Name:<br>
+    <input type="text" name="name" placeholder="<%=locals.book.name%>">  <br>
+    Cover:<br>
+    <input type="text" name="cover" placeholder="<%=locals.book.cover%>">  <br>
+    description:<br>
+    <input type="text" name="description" placeholder="<%=locals.book.description%>">  <br>
+
+    Authores:<br> 
+    <select id="authors" class="author" name="author_id">   
+        <optgroup>
+        <%for ( var i = 0; i <  locals.authores.length; i++ ){%>
+            <% var selected = ( i == 0 ) ? "selected" : ""%>
+            <option value="<%=locals.authores[i]._id%>" name="<%=locals.authores[i]._id%>" <%= selected%> ><%=locals.authores[i].fname + locals.authores[i].lname%></option>
+        <%}%>
+        </optgroup>
+    </select>
+
+    
+    <br>
+    categories:<br> 
+    <select id="categories" name="category_id">
+        <%for ( var i = 0; i <  locals.categories.length; i++ ){%>
+            <% var selected = ( i == 0 ) ? "selected" : ""%>
+            <option value="<%=locals.categories[i]._id%>" <%= selected%> ><%=locals.categories[i].name%></option>
+        <%}%>
+    </select>
+    
+    <input type="submit" name="update">
+</form>
+<% } else{%> 
+<form method="POST" action="/admin/book/:id/add">
+   <h3>Add New book</h3>
+    Name:<br>
+    <input type="text" name="name">  <br>
+    Cover:<br>
+    <input type="text" name="cover">  <br>
+    description:<br>
+    <input type="text" name="description">  <br>
+
+    Authores:<br> 
+    <select id="authors" class="author" name="author_id">   
+        <optgroup>
+        <%for ( var i = 0; i <  locals.authores.length; i++ ){%>
+            <% var selected = ( i == 0 ) ? "selected" : ""%>
+            <option value="<%=locals.authores[i]._id%>" name="<%=locals.authores[i]._id%>" <%= selected%> ><%=locals.authores[i].fname + locals.authores[i].lname%></option>
+        <%}%>
+        </optgroup>
+    </select>
+
+    
+    <br>
+    categories:<br> 
+    <select id="categories" name="category_id">
+        <%for ( var i = 0; i <  locals.categories.length; i++ ){%>
+            <% var selected = ( i == 0 ) ? "selected" : ""%>
+            <option value="<%=locals.categories[i]._id%>" <%= selected%> ><%=locals.categories[i].name%></option>
+        <%}%>
+    </select>
+
+    <input type="submit" name="add">    
+
+</form>
+<%}%>
