@@ -308,7 +308,7 @@ admin_router.get( '/book/new', async (req,res)=>{
 }})
 
 // add new book 
-admin_router.post( '/book/:id/add', async(req,res)=>{
+admin_router.post( '/book/add', async(req,res)=>{
     try
     {
         const new_book = await book_model.create({ 
