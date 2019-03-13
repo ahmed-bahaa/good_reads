@@ -71,7 +71,7 @@ admin_router.post('/categories', async (req, res) => {
     }
 })
 
-//rupdate category
+//update category
 admin_router.put('/categories/:id', async (req, res) => {
 
     try {
@@ -232,6 +232,42 @@ admin_router.put('/books/:id', async (req, res) => {
 
 })
 
+//add book to category -----new
+admin_router.put('/books/add_to_category/:book_id/:category_id', async (req, res) => {
+    try {
+        await book_model.findByIdAndUpdate(req.params.book_id, {'category_id': req.params.category_id})
+        const books = await book_model.find({})
+        res.json({
+            status: "success",
+            data: books
+        });
+    }
+    catch (err) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+})
+
+
+//add book to author -----new
+admin_router.put('/books/add_to_author/:book_id/:author_id', async (req, res) => {
+    try {
+        await book_model.findByIdAndUpdate(req.params.book_id, {'author_id': req.params.author_id});
+        const books = await book_model.find({})
+        res.json({
+            status: "success",
+            data: books
+        });
+    }
+    catch (err) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+})
 
 
 
@@ -249,30 +285,29 @@ admin_router.put('/books/:id', async (req, res) => {
 //import category routes and use it 
 
 
-// lists categories
-admin_router.get('/book', async (req,res)=>{
-    try
-    {
+// lists books
+admin_router.get('/book', async (req, res) => {
+    try {
         const books = await book_model.find({}).populate("author_id").populate("category_id")
-       // res.send(categories)
-       console.log(books)
-        res.render('../views/pages/admin/book.ejs', {books:books,})
+        // res.send(categories)
+        console.log(books)
+        res.render('../views/pages/admin/book.ejs', { books: books, })
     }
-    catch(e){
+    catch (e) {
         console.log(e)
     }
 })
 
 //redirects from update button
-admin_router.get('/book/:id/edit', async (req,res)=>{
-    try{
-       
-        const book = await book_model.findById(req.params.id.replace(":","")).populate("author_id").populate("category_id")     
+admin_router.get('/book/:id/edit', async (req, res) => {
+    try {
+
+        const book = await book_model.findById(req.params.id.replace(":", "")).populate("author_id").populate("category_id")
         const available_categories = await category_model.find({})
         const available_authors = await author_model.find({})
-        res.render('../views/pages/admin/book_form.ejs',{book:book,authores:available_authors,categories:available_categories})
-        }
-    catch(e){
+        res.render('../views/pages/admin/book_form.ejs', { book: book, authores: available_authors, categories: available_categories })
+    }
+    catch (e) {
         console.log(e)
     }
 
@@ -280,14 +315,14 @@ admin_router.get('/book/:id/edit', async (req,res)=>{
 
 
 //redirects from update form
-admin_router.post('/book/:id/edit', async (req,res)=>{
+admin_router.post('/book/:id/edit', async (req, res) => {
 
-    try{
-        const updated_book = await book_model.findByIdAndUpdate(req.params.id.replace(":",""), req.body, {new: true})
+    try {
+        const updated_book = await book_model.findByIdAndUpdate(req.params.id.replace(":", ""), req.body, { new: true })
         const books = await book_model.find({}).populate("author_id").populate("category_id")
-        res.render('../views/pages/admin/book.ejs', {books:books,})
-        }
-    catch(e){
+        res.render('../views/pages/admin/book.ejs', { books: books, })
+    }
+    catch (e) {
         console.log(e)
     }
 
@@ -296,48 +331,50 @@ admin_router.post('/book/:id/edit', async (req,res)=>{
 
 // redirect to new book form
 
-admin_router.get( '/book/new', async (req,res)=>{
-    
-    try{
+admin_router.get('/book/new', async (req, res) => {
+
+    try {
         const available_categories = await category_model.find({})
         const available_authors = await author_model.find({})
-        res.render('../views/pages/admin/book_form.ejs',{authores:available_authors,categories:available_categories})
+        res.render('../views/pages/admin/book_form.ejs', { authores: available_authors, categories: available_categories })
     }
-    catch(e){
-    console.log(e)
-}})
+    catch (e) {
+        console.log(e)
+    }
+})
 
 // add new book 
-admin_router.post( '/book/:id/add', async(req,res)=>{
-    try
-    {
-        const new_book = await book_model.create({ 
-                        name:req.body.name,
-                        cover:req.body.cover,
-                        description:req.body.description,
-                        author_id:req.body.author_id,
-                        category_id:req.body.category_id})
+admin_router.post('/book/:id/add', async (req, res) => {
+    try {
+        const new_book = await book_model.create({
+            name: req.body.name,
+            cover: req.body.cover,
+            description: req.body.description,
+            author_id: req.body.author_id,
+            category_id: req.body.category_id
+        })
         const books = await book_model.find({}).populate("author_id").populate("category_id")
-        res.render('../views/pages/admin/book.ejs', {books:books,})
+        res.render('../views/pages/admin/book.ejs', { books: books, })
     }
-    catch( err ){
-        console.log( err )
-    }})
+    catch (err) {
+        console.log(err)
+    }
+})
 
 
 //delete book
 
-admin_router.get( '/book/:id/delete', async(req,res)=>{
-    try
-    {      
-        const deleted_book = await book_model.findByIdAndRemove(req.params.id.replace(":",""))
+admin_router.get('/book/:id/delete', async (req, res) => {
+    try {
+        const deleted_book = await book_model.findByIdAndRemove(req.params.id.replace(":", ""))
         const books = await book_model.find({}).populate("author_id").populate("category_id")
 
-        res.render('../views/pages/admin/book.ejs', {books:books,})
+        res.render('../views/pages/admin/book.ejs', { books: books, })
     }
-    catch( err ){
-        console.log( err )
-    }})
+    catch (err) {
+        console.log(err)
+    }
+})
 
 
 

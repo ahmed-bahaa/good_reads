@@ -97,20 +97,68 @@ index_router.get('/books/:id', async (req, res) => {
     }
 })
 
+//get all books inside specific category -----new
+index_router.get('/:category_id', async (req, res) => {
+    try {
+        await book.find({category_id: req.params.category_id}, (err, docs)=>{
+            if(err){
+                res.json({
+                    status: "failure",
+                    data: err
+                });
+            } else {
+                res.json({
+                    status: "success",
+                    data: docs
+                });
+            }
+        });
+    }
+    catch (err) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+})
 
+//get all books inside specific author -----new
+index_router.get('/author/:author_id', async (req, res) => {
+    try {
+        await book.find({author_id: req.params.author_id}, (err, docs)=>{
+            if(err){
+                res.json({
+                    status: "failure",
+                    data: err
+                });
+            } else {
+                res.json({
+                    status: "success",
+                    data: docs
+                });
+            }
+        });
+    }
+    catch (err) {
+        res.json({
+            status: "failure",
+            data: err
+        });
+    }
+})
 
 //===================== Categories =========================
 
 // lists categories
 index_router.get('/categories', async (req, res) => {
     try {
-        const books = await category_model.find({});
+        const categories = await category_model.find({});
         res.json({
             status: "success",
             data: categories
         });
     }
-    catch (e) {
+    catch (err) {
         res.json({
             status: "failure",
             data: err

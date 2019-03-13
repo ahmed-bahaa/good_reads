@@ -1,5 +1,6 @@
 const express = require("express")
 const user_model = require('../models/user');
+const user_books_model = require('../models/user_books');
 const user_router = express.Router()
 var multer = require('multer')
 var upload = multer({ dest: 'public/uploads/user-avatar' })
@@ -54,12 +55,33 @@ user_router.get('/logout', (req, res) => {
 
 //======================== books and shelves ==========================
 
-user_router.post('/:user_id/read/:book_id', async (req, res) => {
+// add book to user with a specific shelve, if the book exists just change the shelve, if exists in the same shelve it doesn't do anything --new
+user_router.post('/:user_id/:shelve/:book_id', async (req, res) => {
     try {
-        res.json({
-            status: "success",
-            data: "dfghjk"
-        });
+        user_books_model.findOne({'book_id':req.params.book_id, 'user_id': req.params.user_id}, (err, doc)=>{
+            if(doc){
+                console.log(doc['shelve'])
+                if(doc['shelve'] == req.params.shelve){
+                    res.json({
+                        status: "success",
+                        data: "already exists and in the "+ req.params.shelve
+                    });
+                } else {
+                    user_books_model.findOneAndUpdate({'book_id':req.params.book_id, 'user_id': req.params.user_id}, {'shelve': req.params.shelve}, (err, doc) => {
+                        res.json({
+                            status: "success",
+                            data: "updated successfully to shelve  "+ req.params.shelve
+                        });
+                    })
+                }
+            } else {
+                user_books_model.create({"book_id":req.params.book_id, "user_id": req.params.user_id, "shelve": req.params.shelve});
+                res.json({
+                    status: "success",
+                    data: "created "+ req.params.shelve
+                });
+            }
+        }).select('shelve');
     }
     catch (err) {
         res.json({
@@ -68,6 +90,24 @@ user_router.post('/:user_id/read/:book_id', async (req, res) => {
         });
     }
 });
+
+// delete book from user --new
+user_router.delete('/:user_id/:book_id', (req, res) => {
+    user_books_model.remove({'book_id': req.params.book_id, 'user_id': req.params.user_id}, (err)=>{
+        if(err){
+            console.log(err)
+            res.json({
+                status: "failure",
+                data: err
+            });
+        } else {
+            res.json({
+                status: "success"
+            });
+        }
+    })
+});
+
 
 //======================== Nada betgarrab el database schema ==========================
 
