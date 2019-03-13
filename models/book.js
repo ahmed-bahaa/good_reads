@@ -6,13 +6,7 @@ const book_schema = new mongoose.Schema({
     cover: String,
     description: String,
     author_id: { type: mongoose.Schema.Types.ObjectId , ref: 'author'},
-    category_id: { type: mongoose.Schema.Types.ObjectId , ref: 'category'},
-    reviews: [{
-        user_id: { type: mongoose.Schema.Types.ObjectId , ref: 'user'},
-        user_name: String,
-        rate: Number,
-        review: String
-    }]    
+    category_id: { type: mongoose.Schema.Types.ObjectId , ref: 'category'}   
 });
 
 const book_model = mongoose.model("book", book_schema );

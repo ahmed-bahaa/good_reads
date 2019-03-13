@@ -56,14 +56,9 @@ user_router.get('/logout', (req, res) => {
 
 user_router.post('/:user_id/read/:book_id', async (req, res) => {
     try {
-        // await user_model.findByIdAndUpdate(req.params.user_id, {$addToSet: {books: {book:req.params.book_id, shelve: 'Read'} } } );
-        const books = await user_model.find({_id: req.params.user_id} ).select("books.book")
-        var isInArray = books.some(function (book) {
-            res.send(book._id);
-        });
         res.json({
             status: "success",
-            data: books
+            data: "dfghjk"
         });
     }
     catch (err) {

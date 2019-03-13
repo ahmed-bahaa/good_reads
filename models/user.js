@@ -20,14 +20,7 @@ const userSchema = mongoose.Schema({
             message: 'Provided username is invalid.'
         }
     },
-    image: { type: "string" },
-    books: [
-        {
-            _id: { type: mongoose.Schema.Types.ObjectId, ref: 'book' },
-            shelve: "string",
-            rate: "number"
-        }
-    ]
+    image: { type: "string" }
 });
 userSchema.plugin(passportLocalMongoose);
 

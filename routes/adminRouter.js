@@ -1,10 +1,10 @@
 const express = require("express")
-const category_model = require('../../models/category.js')
-const admin_model = require('../../models/admin.js');
-const book_model = require('../../models/book.js')
-const author_model = require('../../models/author.js');
+const category_model = require('../models/category.js')
+const admin_model = require('../models/admin.js');
+const book_model = require('../models/book.js')
+const author_model = require('../models/author.js');
 const admin_router = express.Router()
-var authenticate = require('../../authenticate');
+var authenticate = require('../authenticate');
 var passport = require('passport');
 var multer = require('multer');
 var upload_author = multer({ dest: 'public/uploads/author-avatar' });
