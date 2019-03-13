@@ -122,7 +122,8 @@ user_router.get('/all',authenticate.verifyUser,async(req,res)=>{
         // .populate('author_id').select(['fname','lname']);
         res.json({
             status: "success",
-            all:all})
+            all:all,
+            avg_rate:avg_rate})
     }
     catch(err)
     {
