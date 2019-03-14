@@ -7,7 +7,6 @@ var upload = multer({ dest: 'public/uploads/user-avatar' })
 var authenticate = require('../authenticate');
 var passport = require('passport');
 const book_model = require('../models/book');
-const user_books_model = require('../models/user_books');
 //======================== GET ==========================
 
 //======================== User Authentication =========================
