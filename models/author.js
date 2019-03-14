@@ -3,7 +3,7 @@ const author_schema = mongoose.Schema({
     fname: "string",
     lname: "string",
     author_photo: "string",
-    birth_date: Date
+    birth_date: "string"
 });
 
 const author_model = mongoose.model("author",author_schema)
