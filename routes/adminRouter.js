@@ -4,7 +4,7 @@ const admin_model = require('../models/admin.js');
 const book_model = require('../models/book.js')
 const author_model = require('../models/author.js');
 const admin_router = express.Router()
-var authenticate = require('../authenticate_admin');
+var authenticate = require('../authenticate');
 var passport = require('passport');
 var multer = require('multer');
 var upload_author = multer({ dest: 'public/uploads/author-avatar' });
@@ -52,13 +52,14 @@ admin_router.post('/signup',cors.corsWithOptions, (req, res) => {
 
 //=================== CATEGORY ===================
 
-//create new category
-admin_router.post('/categories', cors.corsWithOptions, authenticate.verifyAdmin, async (req, res, next) => {
+//create new category  --Nada
+admin_router.post('/categories', cors.corsWithOptions, async (req, res, next) => {
     try {
         //console.log(req.body.fname)
         await category_model.create({ name: req.body.name });
         const categories = await category_model.find({})
-        res.json({categories
+        res.json({
+            categories
         });
     }
     catch (err) {
@@ -66,33 +67,23 @@ admin_router.post('/categories', cors.corsWithOptions, authenticate.verifyAdmin,
     }
 })
 
-<<<<<<< HEAD
-//rupdate category
-admin_router.put('/categories/:id',cors.corsWithOptions ,async (req, res) => {
+//update category  --Nada
+admin_router.put('/categories/:id',cors.corsWithOptions ,async (req, res, next) => {
 
-=======
-
-//update category
-admin_router.put('/categories/:id', async (req, res) => {
->>>>>>> 47077e2534252290505227968a5ee0e75b5266e9
     try {
         await category_model.findByIdAndUpdate(req.params.id.replace(":", ""), req.body, { new: true })
         const categories = await category_model.find({})
         res.json({
-            status: "success",
-            data: categories
+            categories
         });
     }
     catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+        next(err)
     }
 
 })
 
-//delete category
+//delete category  --Nada
 admin_router.delete('/categories/:id',cors.corsWithOptions ,async (req, res) => {
     try {
         await category_model.findByIdAndRemove(req.params.id.replace(":", ""))
@@ -113,86 +104,69 @@ admin_router.delete('/categories/:id',cors.corsWithOptions ,async (req, res) => 
 
 //===================== AUTHORS =========================
 
-//delete author
-admin_router.delete('/authors/:id',cors.corsWithOptions, async (req, res) => {
+//delete author  --Nada
+admin_router.delete('/authors/:id',cors.corsWithOptions, async (req, res, next) => {
     try {
         await author_model.findByIdAndRemove(req.params.id.replace(":", ""));
         const authors = await author_model.find({});
         res.json({
-            status: "success",
-            data: authors
+            authors
         });
     }
     catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+        next(err);
     }
 })
 
-//create new author
-admin_router.post('/authors', cors.corsWithOptions,upload_author.single('avatar'), async (req, res) => {
+//create new author  --Nada
+admin_router.post('/authors', cors.corsWithOptions,upload_author.single('avatar'), async (req, res, next) => {
     try {
         let image = req.file ? req.file.filename : null;
         const new_author = await author_model.create({ fname: req.body.fname, lname: req.body.lname, author_photo: image, birth_date: req.body.birth_date })
         const authors = await author_model.find({})
         res.json({
-            status: "success",
-            data: authors
+            authors
         });
     }
     catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+        next(err);
     }
 })
 
-//update author
-admin_router.put('/authors/:id',cors.corsWithOptions, async (req, res) => {
+//update author  --Nada
+admin_router.put('/authors/:id',cors.corsWithOptions, async (req, res, next) => {
 
     try {
         const updated_author = await author_model.findByIdAndUpdate(req.params.id.replace(":", ""), req.body, { new: true })
         const authors = await author_model.find({})
         res.json({
-            status: "success",
-            data: authors
+            authors
         });
     }
-    catch (e) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+    catch (err) {
+        next(err)
     }
-
 })
 
 
 //===================== Books =========================
 
-//delete book
-admin_router.delete('/books/:id', cors.corsWithOptions,async (req, res) => {
+//delete book --Nada
+admin_router.delete('/books/:id', cors.corsWithOptions,async (req, res, next) => {
     try {
         await book_model.findByIdAndRemove(req.params.id.replace(":", ""));
         const books = await book_model.find({});
         res.json({
-            status: "success",
-            data: books
+            books
         });
     }
     catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+        next(err);
     }
 })
 
-//create new book
-admin_router.post('/books',cors.corsWithOptions ,upload_book.single('cover'), async (req, res) => {
+//create new book --Nada
+admin_router.post('/books',cors.corsWithOptions ,upload_book.single('cover'), async (req, res, next) => {
     try {
         let image = req.file ? req.file.filename : null;
         await book_model.create({
@@ -201,72 +175,56 @@ admin_router.post('/books',cors.corsWithOptions ,upload_book.single('cover'), as
         })
         const books = await book_model.find({})
         res.json({
-            status: "success",
-            data: books
+            books
         });
     }
     catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+        next(err);
     }
 })
 
-//update book
-admin_router.put('/books/:id', cors.corsWithOptions,async (req, res) => {
+//update book --Nada
+admin_router.put('/books/:id', cors.corsWithOptions,async (req, res, next) => {
 
     try {
         const updated_book = await book_model.findByIdAndUpdate(req.params.id.replace(":", ""), req.body, { new: true })
         const books = await book_model.find({})
         res.json({
-            status: "success",
-            data: books
+            books
         });
     }
-    catch (e) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+    catch (err) {
+        next(err)
     }
 
 })
 
-//add book to category -----new
-admin_router.put('/books/add_to_category/:book_id/:category_id', async (req, res) => {
+//add book to category -----new  --Nada
+admin_router.put('/books/add_to_category/:book_id/:category_id', async (req, res, next) => {
     try {
         await book_model.findByIdAndUpdate(req.params.book_id, {'category_id': req.params.category_id})
         const books = await book_model.find({})
         res.json({
-            status: "success",
-            data: books
+            books
         });
     }
     catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+        next(err);
     }
 })
 
 
-//add book to author -----new
-admin_router.put('/books/add_to_author/:book_id/:author_id', async (req, res) => {
+//add book to author -----new  --Nada
+admin_router.put('/books/add_to_author/:book_id/:author_id', async (req, res, next) => {
     try {
         await book_model.findByIdAndUpdate(req.params.book_id, {'author_id': req.params.author_id});
         const books = await book_model.find({})
         res.json({
-            status: "success",
-            data: books
+            books
         });
     }
     catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+        next(err);
     }
 })
 
@@ -283,159 +241,101 @@ admin_router.put('/books/add_to_author/:book_id/:author_id', async (req, res) =>
 
 
 
-//import category routes and use it 
+// //import category routes and use it 
 
 
-<<<<<<< HEAD
-// lists categories
-admin_router.get('/book', cors.cors,async (req,res)=>{
-    try
-    {
-=======
-// lists books
-admin_router.get('/book', async (req, res) => {
-    try {
->>>>>>> 47077e2534252290505227968a5ee0e75b5266e9
-        const books = await book_model.find({}).populate("author_id").populate("category_id")
-        // res.send(categories)
-        console.log(books)
-        res.render('../views/pages/admin/book.ejs', { books: books, })
-    }
-    catch (e) {
-        console.log(e)
-    }
-})
-
-//redirects from update button
-<<<<<<< HEAD
-admin_router.get('/book/:id/edit',cors.cors, async (req,res)=>{
-    try{
-       
-        const book = await book_model.findById(req.params.id.replace(":","")).populate("author_id").populate("category_id")     
-=======
-admin_router.get('/book/:id/edit', async (req, res) => {
-    try {
-
-        const book = await book_model.findById(req.params.id.replace(":", "")).populate("author_id").populate("category_id")
->>>>>>> 47077e2534252290505227968a5ee0e75b5266e9
-        const available_categories = await category_model.find({})
-        const available_authors = await author_model.find({})
-        res.render('../views/pages/admin/book_form.ejs', { book: book, authores: available_authors, categories: available_categories })
-    }
-    catch (e) {
-        console.log(e)
-    }
-
-})
-
-
-//redirects from update form
-<<<<<<< HEAD
-admin_router.post('/book/:id/edit', cors.cors,async (req,res)=>{
-=======
-admin_router.post('/book/:id/edit', async (req, res) => {
->>>>>>> 47077e2534252290505227968a5ee0e75b5266e9
-
-    try {
-        const updated_book = await book_model.findByIdAndUpdate(req.params.id.replace(":", ""), req.body, { new: true })
-        const books = await book_model.find({}).populate("author_id").populate("category_id")
-        res.render('../views/pages/admin/book.ejs', { books: books, })
-    }
-    catch (e) {
-        console.log(e)
-    }
-
-})
-
-
-// redirect to new book form
-
-<<<<<<< HEAD
-admin_router.get( '/book/new', cors.cors,async (req,res)=>{
-    
-    try{
-=======
-admin_router.get('/book/new', async (req, res) => {
-
-    try {
->>>>>>> 47077e2534252290505227968a5ee0e75b5266e9
-        const available_categories = await category_model.find({})
-        const available_authors = await author_model.find({})
-        res.render('../views/pages/admin/book_form.ejs', { authores: available_authors, categories: available_categories })
-    }
-    catch (e) {
-        console.log(e)
-    }
-})
-
-// add new book 
-<<<<<<< HEAD
-admin_router.post( '/book/:id/add', cors.corsWithOptions,async(req,res)=>{
-=======
-
-admin_router.post( '/book/add', async(req,res)=>{
->>>>>>> 47077e2534252290505227968a5ee0e75b5266e9
-    try
-    {
-        const new_book = await book_model.create({ 
-                        name:req.body.name,
-                        cover:req.body.cover,
-                        description:req.body.description,
-                        author_id:req.body.author_id,
-                        category_id:req.body.category_id})
-        const books = await book_model.find({}).populate("author_id").populate("category_id")
-        res.render('../views/pages/admin/book.ejs', { books: books, })
-    }
-    catch (err) {
-        console.log(err)
-    }
-})
-
-
-//delete book
-
-<<<<<<< HEAD
-admin_router.get( '/book/:id/delete',cors.cors, async(req,res)=>{
-    try
-    {      
-        const deleted_book = await book_model.findByIdAndRemove(req.params.id.replace(":",""))
-=======
-admin_router.get('/book/:id/delete', async (req, res) => {
-    try {
-        const deleted_book = await book_model.findByIdAndRemove(req.params.id.replace(":", ""))
->>>>>>> 47077e2534252290505227968a5ee0e75b5266e9
-        const books = await book_model.find({}).populate("author_id").populate("category_id")
-
-        res.render('../views/pages/admin/book.ejs', { books: books, })
-    }
-    catch (err) {
-        console.log(err)
-    }
-})
-
-
-
-
-
-
-
-
-
-//======================== Nada betgarrab el database schema ==========================
-// admin_router.post('/signup',async(req, res)=> {
+// // lists categories
+// admin_router.get('/book', cors.cors,async (req,res)=>{
 //     try
 //     {
-//         const admin = new admin_model({username:req.body.username, password:req.body.password, name:req.body.name})
-//         // const admin = new admin_model({username:"admin", password:"admin", name:"good reads admin"}) //dummy admin created on the fly
-//         await admin.save((err, doc) => {
-//             if (err) console.log(err) //duplicate username
-//             const admins = admin_model.find((err,doc)=>{
-//                 res.send(doc);
-//             }) 
-//         })
+//         const books = await book_model.find({}).populate("author_id").populate("category_id")
+//         // res.send(categories)
+//         console.log(books)
+//         res.render('../views/pages/admin/book.ejs', { books: books, })
 //     }
-//     catch( err ){
-//         console.log( err )
-//     }});
+//     catch (e) {
+//         console.log(e)
+//     }
+// })
+
+// //redirects from update button
+// admin_router.get('/book/:id/edit',cors.cors, async (req,res)=>{
+//     try{
+       
+//         const book = await book_model.findById(req.params.id.replace(":","")).populate("author_id").populate("category_id")     
+//         const available_categories = await category_model.find({})
+//         const available_authors = await author_model.find({})
+//         res.render('../views/pages/admin/book_form.ejs', { book: book, authores: available_authors, categories: available_categories })
+//     }
+//     catch (e) {
+//         console.log(e)
+//     }
+
+// })
+
+
+// //redirects from update form
+// admin_router.post('/book/:id/edit', cors.cors,async (req,res)=>{
+
+//     try {
+//         const updated_book = await book_model.findByIdAndUpdate(req.params.id.replace(":", ""), req.body, { new: true })
+//         const books = await book_model.find({}).populate("author_id").populate("category_id")
+//         res.render('../views/pages/admin/book.ejs', { books: books, })
+//     }
+//     catch (e) {
+//         console.log(e)
+//     }
+
+// })
+
+
+// // redirect to new book form
+
+// admin_router.get( '/book/new', cors.cors,async (req,res)=>{
+    
+//     try{
+//         const available_categories = await category_model.find({})
+//         const available_authors = await author_model.find({})
+//         res.render('../views/pages/admin/book_form.ejs', { authores: available_authors, categories: available_categories })
+//     }
+//     catch (e) {
+//         console.log(e)
+//     }
+// })
+
+// // add new book 
+// admin_router.post( '/book/:id/add', cors.corsWithOptions,async(req,res)=>{
+//     try
+//     {
+//         const new_book = await book_model.create({ 
+//                         name:req.body.name,
+//                         cover:req.body.cover,
+//                         description:req.body.description,
+//                         author_id:req.body.author_id,
+//                         category_id:req.body.category_id})
+//         const books = await book_model.find({}).populate("author_id").populate("category_id")
+//         res.render('../views/pages/admin/book.ejs', { books: books, })
+//     }
+//     catch (err) {
+//         console.log(err)
+//     }
+// })
+
+
+// //delete book
+
+// admin_router.get( '/book/:id/delete',cors.corsWithOptions, async(req,res)=>{
+//     try
+//     {      
+//         const deleted_book = await book_model.findByIdAndRemove(req.params.id.replace(":",""))
+//         const books = await book_model.find({}).populate("author_id").populate("category_id")
+
+//         res.render('../views/pages/admin/book.ejs', { books: books, })
+//     }
+//     catch (err) {
+//         console.log(err)
+//     }
+// })
+
 
 module.exports = admin_router
