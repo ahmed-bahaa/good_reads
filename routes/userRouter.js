@@ -152,6 +152,24 @@ user_router.get('/books/read',authenticate.verifyUser,async(req,res)=>{
 })
 
 
+user_router.get('/books/current',authenticate.verifyUser,async(req,res)=>{
+    // db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$avg : "$likes"}}}])
+    try{
+        const data = await user_books_model.find( { $and: [ { user_id:req.user._id }, {shelve:"current"} ] } ).select('rate shelve').populate('book_id')
+        .select('name cover').populate('book_id.author_id').select('fname lname')
+        res.json({
+            data:data,
+            avg_rate:avg_rate})
+    }
+    catch(err)
+    {
+        res.json({
+            error: err
+        });
+    }
+})
+
+
 
 // {
 //     "name":"docker",
