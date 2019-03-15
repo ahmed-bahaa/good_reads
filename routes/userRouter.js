@@ -56,7 +56,7 @@ user_router.get('/logout', (req, res) => {
 //========================user books and shelves/rate ==========================
 
 // add book to user with a specific shelve, if the book exists just change the shelve, if exists in the same shelve it doesn't do anything --new --Nada
-user_router.post('/:shelve', cors.corsWithOptions, authenticate.verifyUser, async (req, res) => {
+user_router.post('/:shelve', cors.corsWithOptions, authenticate.verifyUser, async (req, res, next) => {
     try {
         // console.log(req.user)
         user_books_model.findOne({'book_id':req.body.book_id, 'user_id': req.user.id}, ['shelve', 'rate'] , (err, doc)=>{
@@ -97,7 +97,7 @@ user_router.post('/:shelve', cors.corsWithOptions, authenticate.verifyUser, asyn
 });
 
 // delete book from user --new  --Nada
-user_router.delete('/books/:book_id', cors.corsWithOptions, authenticate.verifyUser, (req, res) => {
+user_router.delete('/books/:book_id', cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     user_books_model.remove({'book_id': req.params.book_id, 'user_id': req.user.id}, (err)=>{
         if(err){
             console.log(err)
