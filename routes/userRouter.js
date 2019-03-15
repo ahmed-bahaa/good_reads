@@ -7,10 +7,9 @@ var upload = multer({ dest: 'public/uploads/user-avatar' })
 var authenticate = require('../authenticate');
 var passport = require('passport');
 const book_model = require('../models/book');
-const user_books_model = require('../models/user_books');
-//======================== GET ==========================
+const cors= require('./cors');
 
-//======================== User Authentication =========================
+//======================== User Authentication ========================= 
 user_router.post('/signup', upload.single('avatar'), (req, res, next) => {
     let image= req.file ? req.file.filename : null
     user_model.register(new user_model({
@@ -54,121 +53,133 @@ user_router.get('/logout', (req, res) => {
 
 
 
-//======================== books and shelves ==========================
+//========================user books and shelves/rate ==========================
 
-// add book to user with a specific shelve, if the book exists just change the shelve, if exists in the same shelve it doesn't do anything --new
-user_router.post('/:user_id/:shelve/:book_id', async (req, res) => {
+// add book to user with a specific shelve, if the book exists just change the shelve, if exists in the same shelve it doesn't do anything --new --Nada
+user_router.post('/:shelve', cors.corsWithOptions, authenticate.verifyUser, async (req, res) => {
     try {
-        user_books_model.findOne({'book_id':req.params.book_id, 'user_id': req.params.user_id}, (err, doc)=>{
+        // console.log(req.user)
+        user_books_model.findOne({'book_id':req.body.book_id, 'user_id': req.user.id}, ['shelve', 'rate'] , (err, doc)=>{
             if(doc){
-                console.log(doc['shelve'])
-                if(doc['shelve'] == req.params.shelve){
+                console.log(doc)
+                // console.log(req.body.book_id)
+                let rate = req.body.rate? req.body.rate : null;
+                if(doc['shelve'] == req.params.shelve && doc['rate'] == rate){
                     res.json({
-                        status: "success",
-                        data: "already exists and in the "+ req.params.shelve
+                        "response": "nothing needs update"
                     });
-                } else {
-                    user_books_model.findOneAndUpdate({'book_id':req.params.book_id, 'user_id': req.params.user_id}, {'shelve': req.params.shelve}, (err, doc) => {
+                }
+                else if (doc['rate'] != rate){
+                    user_books_model.findOneAndUpdate({'book_id':req.body.book_id, 'user_id': req.user.id}, {'rate': rate}, (err, doc) => {
                         res.json({
-                            status: "success",
-                            data: "updated successfully to shelve  "+ req.params.shelve
+                            "response": "rate successfully updated to  "+ rate
+                        });
+                    })
+                }
+                 else {
+                    user_books_model.findOneAndUpdate({'book_id':req.body.book_id, 'user_id': req.user.id}, {'shelve': req.params.shelve}, (err, doc) => {
+                        res.json({
+                            "response": "updated successfully to shelve  "+ req.params.shelve
                         });
                     })
                 }
             } else {
-                user_books_model.create({"book_id":req.params.book_id, "user_id": req.params.user_id, "shelve": req.params.shelve});
+                user_books_model.create({"book_id":req.body.book_id, "user_id": req.user.id, "shelve": req.params.shelve});
                 res.json({
-                    status: "success",
-                    data: "created "+ req.params.shelve
+                    "response": "created and added to shelve "+ req.params.shelve
                 });
             }
-        }).select('shelve');
+        });
     }
     catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+        next(err);
     }
 });
 
-// delete book from user --new
-user_router.delete('/:user_id/:book_id', (req, res) => {
-    user_books_model.remove({'book_id': req.params.book_id, 'user_id': req.params.user_id}, (err)=>{
+// delete book from user --new  --Nada
+user_router.delete('/books/:book_id', cors.corsWithOptions, authenticate.verifyUser, (req, res) => {
+    user_books_model.remove({'book_id': req.params.book_id, 'user_id': req.user.id}, (err)=>{
         if(err){
             console.log(err)
-            res.json({
-                status: "failure",
-                data: err
-            });
+            next(err);
         } else {
-            res.json({
-                status: "success"
-            });
+            res.json({});
         }
     })
 });
 
 
-//======================== Nada betgarrab el database schema ==========================
-
-user_router.get('/users', async (req, res) => {
-    try {
-        const users = await user_model.find({});
-        res.json({
-            status: "success",
-            data: users
-        });
-    }
-    catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
-    }
-});
-
-user_router.post('/create', async (req, res) => {
-    try {
-        const user = new user_model({
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            username: req.body.username,
-            password: req.body.password,
-            image: req.body.image,
-            books: req.body.books
-        });
-        await user.save((err, doc) => {
-            if (err) console.log(err) //duplicate username
-            const users = user_model.find((err, doc) => {
-                res.send(doc);
-            })
-        })
-    }
-    catch (err) {
-        console.log(err)
-    }
-})
-
 //=================================user home page "hager"===================================
-//3ayza ashil el reviews list w a5liha key value pairs 3ady 3shan el rate kda hrg3 a3melo processing fl angular btri2a mot5lfa
-user_router.get('/all',authenticate.verifyUser,async(req,res)=>{
+user_router.get('/books',authenticate.verifyUser,async(req,res)=>{
     // db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$avg : "$likes"}}}])
     try{
-        const all = await user_books_model.find({user_id:req.user._id}).select('rate shelve').populate('book_id')
+        const data = await user_books_model.find({user_id:req.user._id}).select('rate shelve').populate('book_id')
         .select('name cover').populate('book_id.author_id').select('fname lname')
-        const avg_rate = await user_books_model.aggregate([{$group:{_id:req.user._id,avg_rate:{$avg:'rate'}}}])
-        // const all1 = await book_model.find().select(['cover','name','reviews'])
+        const avg_rate = await user_books_model.aggregate([{$group:{book_id:book_id,avg_rate:{$avg:"$rate"}}}])
+       // const all1 = await book_model.find().select(['cover','name','reviews'])
         // .populate('author_id').select(['fname','lname']);
+        //avg_rate: populate book_id.select rate
         res.json({
-            status: "success",
-            all:all,
+            data:data,
             avg_rate:avg_rate})
     }
     catch(err)
     {
         res.json({
-            status : "failed",
+            error: err
+        });
+    }
+})
+
+//================================user read book====================================
+user_router.get('/books/read',authenticate.verifyUser,async(req,res)=>{
+    // db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$avg : "$likes"}}}])
+    try{
+        const data = await user_books_model.find( { $and: [ { user_id:req.user._id }, {shelve:"read"} ] } ).select('rate shelve').populate('book_id')
+        .select('name cover').populate('book_id.author_id').select('fname lname')
+        res.json({
+            data:data
+            })
+    }
+    catch(err)
+    {
+        res.json({
+            error: err
+        });
+    }
+})
+
+
+user_router.get('/books/current',authenticate.verifyUser,async(req,res)=>{
+    // db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$avg : "$likes"}}}])
+    try{
+        const data = await user_books_model.find( { $and: [ { user_id:req.user._id }, {shelve:"current"} ] } ).select('rate shelve').populate('book_id')
+        .select('name cover').populate('book_id.author_id').select('fname lname')
+        res.json({
+            data:data
+            })
+    }
+    catch(err)
+    {
+        res.json({
+            error: err
+        });
+    }
+})
+
+
+user_router.get('/books/wishlist',authenticate.verifyUser,async(req,res)=>{
+    // db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$avg : "$likes"}}}])
+    try{
+        const data = await user_books_model.find( { $and: [ { user_id:req.user._id }, {shelve:"want"} ] } ).select('rate shelve').populate('book_id')
+        .select('name cover').populate('book_id.author_id').select('fname lname')
+        res.json({
+            data:data
+            })
+    }
+    catch(err)
+    {
+        res.json({
             error: err
         });
     }
