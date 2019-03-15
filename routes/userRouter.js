@@ -115,8 +115,8 @@ user_router.get('/books',authenticate.verifyUser,async(req,res)=>{
     try{
         const data = await user_books_model.find({user_id:req.user._id}).select('rate shelve').populate('book_id')
         .select('name cover').populate('book_id.author_id').select('fname lname')
-        const avg_rate = await user_books_model.aggregate([{$group:{book_id:book_id,avg_rate:{$avg:'rate'}}}])
-        // const all1 = await book_model.find().select(['cover','name','reviews'])
+        const avg_rate = await user_books_model.aggregate([{$group:{book_id:book_id,avg_rate:{$avg:"$rate"}}}])
+       // const all1 = await book_model.find().select(['cover','name','reviews'])
         // .populate('author_id').select(['fname','lname']);
         //avg_rate: populate book_id.select rate
         res.json({
@@ -168,7 +168,22 @@ user_router.get('/books/current',authenticate.verifyUser,async(req,res)=>{
 })
 
 
-
+user_router.get('/books/wishlist',authenticate.verifyUser,async(req,res)=>{
+    // db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$avg : "$likes"}}}])
+    try{
+        const data = await user_books_model.find( { $and: [ { user_id:req.user._id }, {shelve:"want"} ] } ).select('rate shelve').populate('book_id')
+        .select('name cover').populate('book_id.author_id').select('fname lname')
+        res.json({
+            data:data
+            })
+    }
+    catch(err)
+    {
+        res.json({
+            error: err
+        });
+    }
+})
 
 // {
 //     "name":"docker",
