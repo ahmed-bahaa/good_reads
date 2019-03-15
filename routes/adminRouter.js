@@ -71,9 +71,9 @@ admin_router.post('/categories', async (req, res) => {
     }
 })
 
+
 //update category
 admin_router.put('/categories/:id', async (req, res) => {
-
     try {
         await category_model.findByIdAndUpdate(req.params.id.replace(":", ""), req.body, { new: true })
         const categories = await category_model.find({})
