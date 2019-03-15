@@ -141,7 +141,7 @@ user_router.get('/books/read',authenticate.verifyUser,async(req,res)=>{
         .select('name cover').populate('book_id.author_id').select('fname lname')
         res.json({
             data:data,
-            avg_rate:avg_rate})
+            })
     }
     catch(err)
     {
@@ -159,7 +159,7 @@ user_router.get('/books/current',authenticate.verifyUser,async(req,res)=>{
         .select('name cover').populate('book_id.author_id').select('fname lname')
         res.json({
             data:data,
-            avg_rate:avg_rate})
+            })
     }
     catch(err)
     {
