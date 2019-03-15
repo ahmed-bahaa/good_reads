@@ -174,9 +174,23 @@ user_router.get('/all',authenticate.verifyUser,async(req,res)=>{
     }
 })
 
-// {
-//     "name":"docker",
-//     "author_id":"5c8956fca790f35c9722e103",
-//     "category_id":"5c8153446e31282c78843cbc"
-// }
+router.get('/checkJWTToken', cors.corsWithOptions, (req, res) => {
+	passport.authenticate('jwt', {session: false}, (err, user, info) => {
+		if (err)
+			return next(err);
+		
+		if (!user) {
+			res.statusCode = 401;
+			res.setHeader('Content-Type', 'application/json');
+			return res.json({status: 'JWT invalid!', success: false, err: info});
+		}
+		else {
+			res.statusCode = 200;
+			res.setHeader('Content-Type', 'application/json');
+			return res.json({status: 'JWT valid!', success: true, user: user});
+	
+		}
+	}) (req, res);
+});
+  
 module.exports = user_router
