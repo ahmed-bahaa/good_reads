@@ -31,15 +31,11 @@ index_router.get('/authors/', async (req, res) => {
     try {
         const authors = await author.find({});
         res.json({
-            status: "success",
-            data: authors
+            authors
         });
     }
     catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+        next(err);
     }
 })
 
@@ -48,15 +44,11 @@ index_router.get('/authors/:id', async (req, res) => {
     try {
         const selected_author = await author.findById(req.params.id.replace(":", ""));
         res.json({
-            status: "success",
-            data: selected_author
+            selected_author
         });
     }
     catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+        next(err);
     }
 })
 
@@ -67,15 +59,11 @@ index_router.get('/books', async (req, res) => {
     try {
         const books = await book.find({});
         res.json({
-            status: "success",
-            data: books
+            books
         });
     }
     catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+        next(err);
     }
 })
 
@@ -84,15 +72,11 @@ index_router.get('/books/:id', async (req, res) => {
     try {
         const selected_book = await book.findById(req.params.id.replace(":", ""));
         res.json({
-            status: "success",
-            data: selected_book
+            selected_book
         });
     }
     catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+        next(err);
     }
 })
 
@@ -102,23 +86,16 @@ index_router.get('/:category_id/category_books', async (req, res) => {
     try {
         await book.find({category_id: req.params.category_id}, (err, docs)=>{
             if(err){
-                res.json({
-                    status: "failure",
-                    data: err
-                });
+                next(err);
             } else {
                 res.json({
-                    status: "success",
-                    data: docs
+                    docs
                 });
             }
         });
     }
     catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+        next(err);
     }
 })
 
@@ -127,23 +104,16 @@ index_router.get('/:author_id/author_books', async (req, res) => {
     try {
         await book.find({author_id: req.params.author_id}, (err, docs)=>{
             if(err){
-                res.json({
-                    status: "failure",
-                    data: err
-                });
+                next(err);
             } else {
                 res.json({
-                    status: "success",
-                    data: docs
+                    docs
                 });
             }
         });
     }
     catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+        next(err);
     }
 })
 
@@ -154,15 +124,11 @@ index_router.get('/categories', async (req, res) => {
     try {
         const categories = await category_model.find({});
         res.json({
-            status: "success",
-            data: categories
+            categories
         });
     }
     catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+        next(err);
     }
 })
 

@@ -66,40 +66,33 @@ user_router.post('/:shelve', cors.corsWithOptions, authenticate.verifyUser, asyn
                 let rate = req.body.rate? req.body.rate : null;
                 if(doc['shelve'] == req.params.shelve && doc['rate'] == rate){
                     res.json({
-                        status: "success",
-                        data: "nothing needs update"
+                        "response": "nothing needs update"
                     });
                 }
                 else if (doc['rate'] != rate){
                     user_books_model.findOneAndUpdate({'book_id':req.body.book_id, 'user_id': req.user.id}, {'rate': rate}, (err, doc) => {
                         res.json({
-                            status: "success",
-                            data: "rate successfully updated to  "+ rate
+                            "response": "rate successfully updated to  "+ rate
                         });
                     })
                 }
                  else {
                     user_books_model.findOneAndUpdate({'book_id':req.body.book_id, 'user_id': req.user.id}, {'shelve': req.params.shelve}, (err, doc) => {
                         res.json({
-                            status: "success",
-                            data: "updated successfully to shelve  "+ req.params.shelve
+                            "response": "updated successfully to shelve  "+ req.params.shelve
                         });
                     })
                 }
             } else {
                 user_books_model.create({"book_id":req.body.book_id, "user_id": req.user.id, "shelve": req.params.shelve});
                 res.json({
-                    status: "success",
-                    data: "created "+ req.params.shelve
+                    "response": "created and added to shelve "+ req.params.shelve
                 });
             }
         });
     }
     catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+        next(err);
     }
 });
 
@@ -108,14 +101,9 @@ user_router.delete('/books/:book_id', cors.corsWithOptions, authenticate.verifyU
     user_books_model.remove({'book_id': req.params.book_id, 'user_id': req.user.id}, (err)=>{
         if(err){
             console.log(err)
-            res.json({
-                status: "failure",
-                data: err
-            });
+            next(err);
         } else {
-            res.json({
-                status: "success"
-            });
+            res.json({});
         }
     })
 });
