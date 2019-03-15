@@ -27,7 +27,7 @@ index_router.get('/index',async(req,res,)=>{
 //===================== AUTHORS =========================
 
 // lists all authors  --Nada
-index_router.get('/authors/', async (req, res) => {
+index_router.get('/authors/', async (req, res, next) => {
     try {
         const authors = await author.find({});
         res.json({
@@ -40,7 +40,7 @@ index_router.get('/authors/', async (req, res) => {
 })
 
 //get specific author --Nada
-index_router.get('/authors/:id', async (req, res) => {
+index_router.get('/authors/:id', async (req, res, next) => {
     try {
         const selected_author = await author.findById(req.params.id.replace(":", ""));
         res.json({
@@ -55,7 +55,7 @@ index_router.get('/authors/:id', async (req, res) => {
 //===================== Books =========================
 
 // lists all books  -Nada
-index_router.get('/books', async (req, res) => {
+index_router.get('/books', async (req, res, next) => {
     try {
         const books = await book.find({});
         res.json({
@@ -68,7 +68,7 @@ index_router.get('/books', async (req, res) => {
 })
 
 //get specific book -Nada
-index_router.get('/books/:id', async (req, res) => {
+index_router.get('/books/:id', async (req, res, next) => {
     try {
         const selected_book = await book.findById(req.params.id.replace(":", ""));
         res.json({
@@ -82,7 +82,7 @@ index_router.get('/books/:id', async (req, res) => {
 
 
 //get all books inside specific category -----new --Nada
-index_router.get('/:category_id/category_books', async (req, res) => {
+index_router.get('/:category_id/category_books', async (req, res, next) => {
     try {
         await book.find({category_id: req.params.category_id}, (err, docs)=>{
             if(err){
@@ -100,7 +100,7 @@ index_router.get('/:category_id/category_books', async (req, res) => {
 })
 
 //get all books that belong to a specific author -----new --Nada
-index_router.get('/:author_id/author_books', async (req, res) => {
+index_router.get('/:author_id/author_books', async (req, res, next) => {
     try {
         await book.find({author_id: req.params.author_id}, (err, docs)=>{
             if(err){
@@ -120,7 +120,7 @@ index_router.get('/:author_id/author_books', async (req, res) => {
 //===================== Categories =========================
 
 // lists all categories --Nada
-index_router.get('/categories', async (req, res) => {
+index_router.get('/categories', async (req, res, next) => {
     try {
         const categories = await category_model.find({});
         res.json({

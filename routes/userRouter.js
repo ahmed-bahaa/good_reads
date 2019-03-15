@@ -56,7 +56,7 @@ user_router.get('/logout', (req, res) => {
 //========================user books and shelves/rate ==========================
 
 // add book to user with a specific shelve, if the book exists just change the shelve, if exists in the same shelve it doesn't do anything --new --Nada
-user_router.post('/:shelve', cors.corsWithOptions, authenticate.verifyUser, async (req, res) => {
+user_router.post('/:shelve', cors.corsWithOptions, authenticate.verifyUser, async (req, res, next) => {
     try {
         // console.log(req.user)
         user_books_model.findOne({'book_id':req.body.book_id, 'user_id': req.user.id}, ['shelve', 'rate'] , (err, doc)=>{
@@ -97,7 +97,7 @@ user_router.post('/:shelve', cors.corsWithOptions, authenticate.verifyUser, asyn
 });
 
 // delete book from user --new  --Nada
-user_router.delete('/books/:book_id', cors.corsWithOptions, authenticate.verifyUser, (req, res) => {
+user_router.delete('/books/:book_id', cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     user_books_model.remove({'book_id': req.params.book_id, 'user_id': req.user.id}, (err)=>{
         if(err){
             console.log(err)
@@ -185,9 +185,23 @@ user_router.get('/books/wishlist',authenticate.verifyUser,async(req,res)=>{
     }
 })
 
-// {
-//     "name":"docker",
-//     "author_id":"5c8956fca790f35c9722e103",
-//     "category_id":"5c8153446e31282c78843cbc"
-// }
+router.get('/checkJWTToken', cors.corsWithOptions, (req, res) => {
+	passport.authenticate('jwt', {session: false}, (err, user, info) => {
+		if (err)
+			return next(err);
+		
+		if (!user) {
+			res.statusCode = 401;
+			res.setHeader('Content-Type', 'application/json');
+			return res.json({status: 'JWT invalid!', success: false, err: info});
+		}
+		else {
+			res.statusCode = 200;
+			res.setHeader('Content-Type', 'application/json');
+			return res.json({status: 'JWT valid!', success: true, user: user});
+	
+		}
+	}) (req, res);
+});
+  
 module.exports = user_router
