@@ -26,7 +26,7 @@ index_router.get('/index',async(req,res,)=>{
 
 //===================== AUTHORS =========================
 
-// lists authors
+// lists all authors  --Nada
 index_router.get('/authors/', async (req, res) => {
     try {
         const authors = await author.find({});
@@ -35,7 +35,7 @@ index_router.get('/authors/', async (req, res) => {
             data: authors
         });
     }
-    catch (e) {
+    catch (err) {
         res.json({
             status: "failure",
             data: err
@@ -43,16 +43,16 @@ index_router.get('/authors/', async (req, res) => {
     }
 })
 
-//get specific author
+//get specific author --Nada
 index_router.get('/authors/:id', async (req, res) => {
     try {
         const selected_author = await author.findById(req.params.id.replace(":", ""));
         res.json({
-            status: "failure",
+            status: "success",
             data: selected_author
         });
     }
-    catch (e) {
+    catch (err) {
         res.json({
             status: "failure",
             data: err
@@ -62,7 +62,7 @@ index_router.get('/authors/:id', async (req, res) => {
 
 //===================== Books =========================
 
-// lists books
+// lists all books  -Nada
 index_router.get('/books', async (req, res) => {
     try {
         const books = await book.find({});
@@ -71,7 +71,7 @@ index_router.get('/books', async (req, res) => {
             data: books
         });
     }
-    catch (e) {
+    catch (err) {
         res.json({
             status: "failure",
             data: err
@@ -79,17 +79,16 @@ index_router.get('/books', async (req, res) => {
     }
 })
 
-//get specific author
+//get specific book -Nada
 index_router.get('/books/:id', async (req, res) => {
     try {
-        await book.findById(req.params.id.replace(":", ""));
-        const books = await book.find({});
+        const selected_book = await book.findById(req.params.id.replace(":", ""));
         res.json({
             status: "success",
-            data: books
+            data: selected_book
         });
     }
-    catch (e) {
+    catch (err) {
         res.json({
             status: "failure",
             data: err
@@ -97,8 +96,9 @@ index_router.get('/books/:id', async (req, res) => {
     }
 })
 
-//get all books inside specific category -----new
-index_router.get('/:category_id', async (req, res) => {
+
+//get all books inside specific category -----new --Nada
+index_router.get('/:category_id/category_books', async (req, res) => {
     try {
         await book.find({category_id: req.params.category_id}, (err, docs)=>{
             if(err){
@@ -122,8 +122,8 @@ index_router.get('/:category_id', async (req, res) => {
     }
 })
 
-//get all books inside specific author -----new
-index_router.get('/author/:author_id', async (req, res) => {
+//get all books that belong to a specific author -----new --Nada
+index_router.get('/:author_id/author_books', async (req, res) => {
     try {
         await book.find({author_id: req.params.author_id}, (err, docs)=>{
             if(err){
@@ -149,7 +149,7 @@ index_router.get('/author/:author_id', async (req, res) => {
 
 //===================== Categories =========================
 
-// lists categories
+// lists all categories --Nada
 index_router.get('/categories', async (req, res) => {
     try {
         const categories = await category_model.find({});
@@ -165,9 +165,6 @@ index_router.get('/categories', async (req, res) => {
         });
     }
 })
-
-
-
 
 
 
