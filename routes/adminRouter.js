@@ -4,7 +4,7 @@ const admin_model = require('../models/admin.js');
 const book_model = require('../models/book.js')
 const author_model = require('../models/author.js');
 const admin_router = express.Router()
-var authenticate = require('../authenticate');
+var authenticate = require('../authenticate_admin');
 var passport = require('passport');
 var multer = require('multer');
 var upload_author = multer({ dest: 'public/uploads/author-avatar' });
@@ -53,21 +53,16 @@ admin_router.post('/signup',cors.corsWithOptions, (req, res) => {
 //=================== CATEGORY ===================
 
 //create new category
-admin_router.post('/categories', async (req, res) => {
+admin_router.post('/categories', cors.corsWithOptions, authenticate.verifyAdmin, async (req, res, next) => {
     try {
         //console.log(req.body.fname)
-        await category_model.create({ name: req.body.name })
+        await category_model.create({ name: req.body.name });
         const categories = await category_model.find({})
-        res.json({
-            status: "success",
-            data: categories
+        res.json({categories
         });
     }
     catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+        next(err);
     }
 })
 
