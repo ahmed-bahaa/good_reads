@@ -200,7 +200,7 @@ admin_router.put('/books/:id', cors.corsWithOptions,async (req, res, next) => {
 })
 
 //add book to category -----new  --Nada
-admin_router.put('/books/add_to_category/:book_id/:category_id', async (req, res, next) => {
+admin_router.put('/books/add_to_category/:book_id/:category_id',cors.corsWithOptions, async (req, res, next) => {
     try {
         await book_model.findByIdAndUpdate(req.params.book_id, {'category_id': req.params.category_id})
         const books = await book_model.find({})
@@ -215,7 +215,7 @@ admin_router.put('/books/add_to_category/:book_id/:category_id', async (req, res
 
 
 //add book to author -----new  --Nada
-admin_router.put('/books/add_to_author/:book_id/:author_id', async (req, res, next) => {
+admin_router.put('/books/add_to_author/:book_id/:author_id', cors.corsWithOptions, async (req, res, next) => {
     try {
         await book_model.findByIdAndUpdate(req.params.book_id, {'author_id': req.params.author_id});
         const books = await book_model.find({})
