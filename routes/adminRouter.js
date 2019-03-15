@@ -66,9 +66,15 @@ admin_router.post('/categories', cors.corsWithOptions, authenticate.verifyAdmin,
     }
 })
 
+<<<<<<< HEAD
+//rupdate category
+admin_router.put('/categories/:id',cors.corsWithOptions ,async (req, res) => {
+
+=======
 
 //update category
 admin_router.put('/categories/:id', async (req, res) => {
+>>>>>>> 47077e2534252290505227968a5ee0e75b5266e9
     try {
         await category_model.findByIdAndUpdate(req.params.id.replace(":", ""), req.body, { new: true })
         const categories = await category_model.find({})
@@ -280,9 +286,16 @@ admin_router.put('/books/add_to_author/:book_id/:author_id', async (req, res) =>
 //import category routes and use it 
 
 
+<<<<<<< HEAD
+// lists categories
+admin_router.get('/book', cors.cors,async (req,res)=>{
+    try
+    {
+=======
 // lists books
 admin_router.get('/book', async (req, res) => {
     try {
+>>>>>>> 47077e2534252290505227968a5ee0e75b5266e9
         const books = await book_model.find({}).populate("author_id").populate("category_id")
         // res.send(categories)
         console.log(books)
@@ -294,10 +307,17 @@ admin_router.get('/book', async (req, res) => {
 })
 
 //redirects from update button
+<<<<<<< HEAD
+admin_router.get('/book/:id/edit',cors.cors, async (req,res)=>{
+    try{
+       
+        const book = await book_model.findById(req.params.id.replace(":","")).populate("author_id").populate("category_id")     
+=======
 admin_router.get('/book/:id/edit', async (req, res) => {
     try {
 
         const book = await book_model.findById(req.params.id.replace(":", "")).populate("author_id").populate("category_id")
+>>>>>>> 47077e2534252290505227968a5ee0e75b5266e9
         const available_categories = await category_model.find({})
         const available_authors = await author_model.find({})
         res.render('../views/pages/admin/book_form.ejs', { book: book, authores: available_authors, categories: available_categories })
@@ -310,7 +330,11 @@ admin_router.get('/book/:id/edit', async (req, res) => {
 
 
 //redirects from update form
+<<<<<<< HEAD
+admin_router.post('/book/:id/edit', cors.cors,async (req,res)=>{
+=======
 admin_router.post('/book/:id/edit', async (req, res) => {
+>>>>>>> 47077e2534252290505227968a5ee0e75b5266e9
 
     try {
         const updated_book = await book_model.findByIdAndUpdate(req.params.id.replace(":", ""), req.body, { new: true })
@@ -326,9 +350,15 @@ admin_router.post('/book/:id/edit', async (req, res) => {
 
 // redirect to new book form
 
+<<<<<<< HEAD
+admin_router.get( '/book/new', cors.cors,async (req,res)=>{
+    
+    try{
+=======
 admin_router.get('/book/new', async (req, res) => {
 
     try {
+>>>>>>> 47077e2534252290505227968a5ee0e75b5266e9
         const available_categories = await category_model.find({})
         const available_authors = await author_model.find({})
         res.render('../views/pages/admin/book_form.ejs', { authores: available_authors, categories: available_categories })
@@ -339,8 +369,12 @@ admin_router.get('/book/new', async (req, res) => {
 })
 
 // add new book 
+<<<<<<< HEAD
+admin_router.post( '/book/:id/add', cors.corsWithOptions,async(req,res)=>{
+=======
 
 admin_router.post( '/book/add', async(req,res)=>{
+>>>>>>> 47077e2534252290505227968a5ee0e75b5266e9
     try
     {
         const new_book = await book_model.create({ 
@@ -360,9 +394,16 @@ admin_router.post( '/book/add', async(req,res)=>{
 
 //delete book
 
+<<<<<<< HEAD
+admin_router.get( '/book/:id/delete',cors.cors, async(req,res)=>{
+    try
+    {      
+        const deleted_book = await book_model.findByIdAndRemove(req.params.id.replace(":",""))
+=======
 admin_router.get('/book/:id/delete', async (req, res) => {
     try {
         const deleted_book = await book_model.findByIdAndRemove(req.params.id.replace(":", ""))
+>>>>>>> 47077e2534252290505227968a5ee0e75b5266e9
         const books = await book_model.find({}).populate("author_id").populate("category_id")
 
         res.render('../views/pages/admin/book.ejs', { books: books, })
