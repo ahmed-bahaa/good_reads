@@ -6,7 +6,6 @@ var multer = require('multer')
 var upload = multer({ dest: 'public/uploads/user-avatar' })
 var authenticate = require('../authenticate');
 var passport = require('passport');
-const book_model = require('../models/book');
 const cors= require('./cors');
 
 //======================== User Authentication ========================= 
@@ -185,7 +184,7 @@ user_router.get('/books/wishlist',authenticate.verifyUser,async(req,res)=>{
     }
 })
 
-router.get('/checkJWTToken', cors.corsWithOptions, (req, res) => {
+user_router.get('/checkJWTToken', cors.corsWithOptions, (req, res) => {
 	passport.authenticate('jwt', {session: false}, (err, user, info) => {
 		if (err)
 			return next(err);
