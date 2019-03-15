@@ -110,7 +110,6 @@ user_router.delete('/books/:book_id', cors.corsWithOptions, authenticate.verifyU
 
 
 //=================================user home page "hager"===================================
-//3ayza ashil el reviews list w a5liha key value pairs 3ady 3shan el rate kda hrg3 a3melo processing fl angular btri2a mot5lfa
 user_router.get('/books',authenticate.verifyUser,async(req,res)=>{
     // db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$avg : "$likes"}}}])
     try{
@@ -119,15 +118,14 @@ user_router.get('/books',authenticate.verifyUser,async(req,res)=>{
         const avg_rate = await user_books_model.aggregate([{$group:{book_id:book_id,avg_rate:{$avg:'rate'}}}])
         // const all1 = await book_model.find().select(['cover','name','reviews'])
         // .populate('author_id').select(['fname','lname']);
+        //avg_rate: populate book_id.select rate
         res.json({
-            status: "success",
             data:data,
             avg_rate:avg_rate})
     }
     catch(err)
     {
         res.json({
-            status : "failed",
             error: err
         });
     }
@@ -140,7 +138,7 @@ user_router.get('/books/read',authenticate.verifyUser,async(req,res)=>{
         const data = await user_books_model.find( { $and: [ { user_id:req.user._id }, {shelve:"read"} ] } ).select('rate shelve').populate('book_id')
         .select('name cover').populate('book_id.author_id').select('fname lname')
         res.json({
-            data:data,
+            data:data
             })
     }
     catch(err)
@@ -158,7 +156,7 @@ user_router.get('/books/current',authenticate.verifyUser,async(req,res)=>{
         const data = await user_books_model.find( { $and: [ { user_id:req.user._id }, {shelve:"current"} ] } ).select('rate shelve').populate('book_id')
         .select('name cover').populate('book_id.author_id').select('fname lname')
         res.json({
-            data:data,
+            data:data
             })
     }
     catch(err)
