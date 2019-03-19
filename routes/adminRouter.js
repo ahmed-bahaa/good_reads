@@ -13,6 +13,7 @@ const cors= require('./cors');
 
 
 //==========================admin authentication =============================
+admin_router.options("/signin",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 admin_router.post('/signin',cors.corsWithOptions ,passport.authenticate('local'), (req, res) => {
 
     var token = authenticate.getToken({ _id: req.user._id });
@@ -21,6 +22,8 @@ admin_router.post('/signin',cors.corsWithOptions ,passport.authenticate('local')
     res.json({ success: true, token: token, status: 'You are successfully logged in!' });
 
 });
+admin_router.options("/signup",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+
 admin_router.post('/signup',cors.corsWithOptions, (req, res) => {
 
     admin_model.register(new admin_model({
@@ -53,14 +56,15 @@ admin_router.post('/signup',cors.corsWithOptions, (req, res) => {
 //=================== CATEGORY ===================
 
 //create new category  --Nada
+admin_router.options('/categories',cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 admin_router.post('/categories', cors.corsWithOptions, async (req, res, next) => {
     try {
         //console.log(req.body.fname)
         await category_model.create({ name: req.body.name });
         const categories = await category_model.find({})
-        res.json({
+        res.json(
             categories
-        });
+        );
     }
     catch (err) {
         next(err);
@@ -68,14 +72,16 @@ admin_router.post('/categories', cors.corsWithOptions, async (req, res, next) =>
 })
 
 //update category  --Nada
+admin_router.options("/categories/:id",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+
 admin_router.put('/categories/:id',cors.corsWithOptions ,async (req, res, next) => {
 
     try {
         await category_model.findByIdAndUpdate(req.params.id.replace(":", ""), req.body, { new: true })
         const categories = await category_model.find({})
-        res.json({
+        res.json(
             categories
-        });
+        );
     }
     catch (err) {
         next(err)
@@ -84,20 +90,18 @@ admin_router.put('/categories/:id',cors.corsWithOptions ,async (req, res, next) 
 })
 
 //delete category  --Nada
+admin_router.options("/categories/:id",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+
 admin_router.delete('/categories/:id',cors.corsWithOptions ,async (req, res) => {
     try {
         await category_model.findByIdAndRemove(req.params.id.replace(":", ""))
         const categories = await category_model.find({})
-        res.json({
-            status: "success",
-            data: categories
-        });
+        res.json(
+             categories
+        );
     }
     catch (err) {
-        res.json({
-            status: "failure",
-            data: err
-        });
+        next(err)
     }
 })
 
@@ -105,13 +109,15 @@ admin_router.delete('/categories/:id',cors.corsWithOptions ,async (req, res) => 
 //===================== AUTHORS =========================
 
 //delete author  --Nada
+admin_router.options("/authors/:id",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+
 admin_router.delete('/authors/:id',cors.corsWithOptions, async (req, res, next) => {
     try {
         await author_model.findByIdAndRemove(req.params.id.replace(":", ""));
         const authors = await author_model.find({});
-        res.json({
+        res.json(
             authors
-        });
+        );
     }
     catch (err) {
         next(err);
@@ -119,14 +125,16 @@ admin_router.delete('/authors/:id',cors.corsWithOptions, async (req, res, next) 
 })
 
 //create new author  --Nada
+admin_router.options("/authors",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+
 admin_router.post('/authors', cors.corsWithOptions,upload_author.single('avatar'), async (req, res, next) => {
     try {
         let image = req.file ? req.file.filename : null;
         const new_author = await author_model.create({ fname: req.body.fname, lname: req.body.lname, author_photo: image, birth_date: req.body.birth_date })
         const authors = await author_model.find({})
-        res.json({
+        res.json(
             authors
-        });
+        );
     }
     catch (err) {
         next(err);
@@ -134,14 +142,16 @@ admin_router.post('/authors', cors.corsWithOptions,upload_author.single('avatar'
 })
 
 //update author  --Nada
+admin_router.options("/authors/:id",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+
 admin_router.put('/authors/:id',cors.corsWithOptions, async (req, res, next) => {
 
     try {
         const updated_author = await author_model.findByIdAndUpdate(req.params.id.replace(":", ""), req.body, { new: true })
         const authors = await author_model.find({})
-        res.json({
+        res.json(
             authors
-        });
+        );
     }
     catch (err) {
         next(err)
@@ -152,13 +162,15 @@ admin_router.put('/authors/:id',cors.corsWithOptions, async (req, res, next) => 
 //===================== Books =========================
 
 //delete book --Nada
+admin_router.options("/books/:id",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+
 admin_router.delete('/books/:id', cors.corsWithOptions,async (req, res, next) => {
     try {
         await book_model.findByIdAndRemove(req.params.id.replace(":", ""));
         const books = await book_model.find({});
-        res.json({
+        res.json(
             books
-        });
+        );
     }
     catch (err) {
         next(err);
@@ -166,6 +178,8 @@ admin_router.delete('/books/:id', cors.corsWithOptions,async (req, res, next) =>
 })
 
 //create new book --Nada
+admin_router.options("/books",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+
 admin_router.post('/books',cors.corsWithOptions ,upload_book.single('cover'), async (req, res, next) => {
     try {
         let image = req.file ? req.file.filename : null;
@@ -174,9 +188,9 @@ admin_router.post('/books',cors.corsWithOptions ,upload_book.single('cover'), as
             category_id: req.body.category_id
         })
         const books = await book_model.find({})
-        res.json({
+        res.json(
             books
-        });
+        );
     }
     catch (err) {
         next(err);
@@ -184,14 +198,16 @@ admin_router.post('/books',cors.corsWithOptions ,upload_book.single('cover'), as
 })
 
 //update book --Nada
+admin_router.options("/books/:id",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+
 admin_router.put('/books/:id', cors.corsWithOptions,async (req, res, next) => {
 
     try {
         const updated_book = await book_model.findByIdAndUpdate(req.params.id.replace(":", ""), req.body, { new: true })
         const books = await book_model.find({})
-        res.json({
+        res.json(
             books
-        });
+        );
     }
     catch (err) {
         next(err)
@@ -200,28 +216,31 @@ admin_router.put('/books/:id', cors.corsWithOptions,async (req, res, next) => {
 })
 
 //add book to category -----new  --Nada
+admin_router.options('/books/add_to_category/:book_id/:category_id',cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+
 admin_router.put('/books/add_to_category/:book_id/:category_id',cors.corsWithOptions, async (req, res, next) => {
     try {
         await book_model.findByIdAndUpdate(req.params.book_id, {'category_id': req.params.category_id})
         const books = await book_model.find({})
-        res.json({
+        res.json(
             books
-        });
+        );
     }
     catch (err) {
         next(err);
     }
 })
 
+admin_router.options('/books/add_to_author/:book_id/:author_id',cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 
 //add book to author -----new  --Nada
 admin_router.put('/books/add_to_author/:book_id/:author_id', cors.corsWithOptions, async (req, res, next) => {
     try {
         await book_model.findByIdAndUpdate(req.params.book_id, {'author_id': req.params.author_id});
         const books = await book_model.find({})
-        res.json({
+        res.json(
             books
-        });
+        );
     }
     catch (err) {
         next(err);

@@ -23,5 +23,5 @@ goodreads.use(passport.initialize());
 
 goodreads.use(express.urlencoded())
 goodreads.use('/goodreads', index_router)
-goodreads.use('/user', user_router)
+goodreads.use('/users', user_router)
 goodreads.use('/admin', admin_router)

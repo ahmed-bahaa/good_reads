@@ -9,7 +9,8 @@ var passport = require('passport');
 const cors= require('./cors');
 
 //======================== User Authentication ========================= 
-user_router.post('/signup', upload.single('avatar'), (req, res, next) => {
+user_router.options("/signup",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+user_router.post('/signup',cors.corsWithOptions, upload.single('avatar'), (req, res, next) => {
     let image= req.file ? req.file.filename : null
     user_model.register(new user_model({
         username: req.body.username,
@@ -31,7 +32,9 @@ user_router.post('/signup', upload.single('avatar'), (req, res, next) => {
         }
     })
 });
-user_router.post('/signin', passport.authenticate('local'), (req, res) => {
+user_router.options("/signin",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+
+user_router.post('/signin',cors.corsWithOptions ,passport.authenticate('local'), (req, res) => {
     var token = authenticate.getToken({ _id: req.user._id });
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
@@ -55,6 +58,8 @@ user_router.get('/logout', (req, res) => {
 //========================user books and shelves/rate ==========================
 
 // add book to user with a specific shelve, if the book exists just change the shelve, if exists in the same shelve it doesn't do anything --new --Nada
+user_router.options("/:shelve",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+
 user_router.post('/:shelve', cors.corsWithOptions, authenticate.verifyUser, async (req, res, next) => {
     try {
         // console.log(req.user)
@@ -96,6 +101,8 @@ user_router.post('/:shelve', cors.corsWithOptions, authenticate.verifyUser, asyn
 });
 
 // delete book from user --new  --Nada
+user_router.options("/books/:book_id",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+
 user_router.delete('/books/:book_id', cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     user_books_model.remove({'book_id': req.params.book_id, 'user_id': req.user.id}, (err)=>{
         if(err){
@@ -109,7 +116,9 @@ user_router.delete('/books/:book_id', cors.corsWithOptions, authenticate.verifyU
 
 
 //=================================user home page "hager"===================================
-user_router.get('/books',authenticate.verifyUser,async(req,res)=>{
+user_router.options("/books",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+
+user_router.get('/books',cors.cors,authenticate.verifyUser,async(req,res)=>{
     // db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$avg : "$likes"}}}])
     try{
         const data = await user_books_model.find({user_id:req.user._id}).select('rate shelve').populate('book_id')
@@ -131,7 +140,9 @@ user_router.get('/books',authenticate.verifyUser,async(req,res)=>{
 })
 
 //================================user read book====================================
-user_router.get('/books/read',authenticate.verifyUser,async(req,res)=>{
+user_router.options("/books/read",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+
+user_router.get('/books/read',cors.cors,authenticate.verifyUser,async(req,res)=>{
     // db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$avg : "$likes"}}}])
     try{
         const data = await user_books_model.find( { $and: [ { user_id:req.user._id }, {shelve:"read"} ] } ).select('rate shelve').populate('book_id')
@@ -148,8 +159,9 @@ user_router.get('/books/read',authenticate.verifyUser,async(req,res)=>{
     }
 })
 
+user_router.options("/books/current",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 
-user_router.get('/books/current',authenticate.verifyUser,async(req,res)=>{
+user_router.get('/books/current',cors.cors,authenticate.verifyUser,async(req,res)=>{
     // db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$avg : "$likes"}}}])
     try{
         const data = await user_books_model.find( { $and: [ { user_id:req.user._id }, {shelve:"current"} ] } ).select('rate shelve').populate('book_id')
@@ -166,8 +178,9 @@ user_router.get('/books/current',authenticate.verifyUser,async(req,res)=>{
     }
 })
 
+user_router.options("/books/wishlist",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 
-user_router.get('/books/wishlist',authenticate.verifyUser,async(req,res)=>{
+user_router.get('/books/wishlist',cors.cors,authenticate.verifyUser,async(req,res)=>{
     // db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$avg : "$likes"}}}])
     try{
         const data = await user_books_model.find( { $and: [ { user_id:req.user._id }, {shelve:"want"} ] } ).select('rate shelve').populate('book_id')
@@ -183,7 +196,7 @@ user_router.get('/books/wishlist',authenticate.verifyUser,async(req,res)=>{
         });
     }
 })
-
+user_router.options("/checkJWTToken",cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 user_router.get('/checkJWTToken', cors.corsWithOptions, (req, res) => {
 	passport.authenticate('jwt', {session: false}, (err, user, info) => {
 		if (err)
